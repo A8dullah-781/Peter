@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+body{
+    background-color: skyblue;
+    overflow-x: hidden;
+}
+
+/* 🌤 SKY BACKGROUND */
+.sky-bg {
+  background: linear-gradient(
+    to bottom,
+    #E5F2FF 0%,
+    #C9E6FF 30%,
+    #8ACEFF 60%,
+    #44B5F6 100%
+  );
+}
+
+/* 📝 PREMIUM TEXT */
+.sky-text {
+  color: #0f172a; /* soft navy instead of harsh black */
+}
+
+/* ⚪ BALL (soft sky glow) */
+.sky-ball {
+  background: radial-gradient(circle, #ffffff 40%, #dbeafe 100%);
+}
+
+/* 🔘 NAV BUTTON (glass feel) */
+.sky-btn {
+  background: rgba(0, 136, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 136, 255, 0.25);
+}
+
+/* 🌫 OPTIONAL: subtle glow overlay */
+.sky-glow {
+  background: radial-gradient(circle at top, rgba(255,255,255,0.6), transparent 60%);
+}
