@@ -194,14 +194,13 @@
 // export default App;
 
 
-
-
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Home from "../Components/Home";
 import Navbar from "../Components/Navbar";
 import Faq from "../Components/Faq";
 import Video from "../Components/Video";
+import Lenis from "lenis";
 
 const App = () => {
   const [showHome, setShowHome] = useState(false);
@@ -213,27 +212,39 @@ const App = () => {
   const loaderRef = useRef(null);
 
   useEffect(() => {
+    // ✅ LENIS (only addition, nothing modified)
+    const lenis = new Lenis({
+      duration: 1.6,
+      smooth: true,
+      smoothTouch: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
     const tl = gsap.timeline({
       onComplete: () => {
-       gsap.to(loaderRef.current, {
-  opacity: 0,
-  y: -40, // thoda upar move bhi karega → premium feel
-  scale: 0.98, // subtle shrink
-  duration: 0.8,
-  delay: 0.3,
-  ease: "power2.out",
-  onComplete: () => {
-    setShowHome(true);
-  },
-});
+        gsap.to(loaderRef.current, {
+          opacity: 0,
+          y: -40,
+          scale: 0.98,
+          duration: 0.8,
+          delay: 0.3,
+          ease: "power2.out",
+          onComplete: () => {
+            setShowHome(true);
+          },
+        });
       },
     });
 
-    // initial states
     gsap.set(wordsRef.current, { opacity: 0, y: 20 });
     gsap.set(finalTextRef.current, { opacity: 0, y: 20 });
 
-    // ✅ REALISTIC BOUNCE (your old logic but reusable)
     const bounce = () => {
       return gsap.timeline()
         .to(ballRef.current, {
@@ -270,48 +281,34 @@ const App = () => {
         });
     };
 
-    // 🎯 SEQUENCE
-
-    // bounce 1 → word 1
     tl.add(bounce())
-      .to(wordsRef.current[0], {
+      .to(wordsRef.current[0], { opacity: 1, y: 0, duration: 0.4 });
+
+    tl.add(bounce())
+      .to(wordsRef.current[1], { opacity: 1, y: 0, duration: 0.4 });
+
+    tl.add(bounce())
+      .to(wordsRef.current[2], { opacity: 1, y: 0, duration: 0.4 });
+
+    tl.add(bounce())
+      .to(finalTextRef.current, {
         opacity: 1,
         y: 0,
-        duration: 0.4,
+        duration: 0.6,
       });
 
-    // bounce 2 → word 2
-    tl.add(bounce())
-      .to(wordsRef.current[1], {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-      });
-
-    // bounce 3 → word 3
-    tl.add(bounce())
-      .to(wordsRef.current[2], {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-      });
-
-    // final text
-    tl.add(bounce())
-    .to(finalTextRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-    });
-
+    return () => {
+      lenis.destroy();
+    };
   }, []);
 
   if (showHome) {
     return (
-      <> <Navbar />
+      <>
+        <Navbar />
         <Home />
-       <Video/>
-       <Faq/>
+        <Video />
+        <Faq />
       </>
     );
   }
@@ -321,19 +318,13 @@ const App = () => {
       ref={loaderRef}
       className="fixed inset-0 bg-sky-100 flex flex-col items-center justify-center"
     >
-      {/* BALL */}
-      <div
-        ref={ballRef}
-        className="w-8 h-8 bg-black rounded-full"
-      />
+      <div ref={ballRef} className="w-8 h-8 bg-black rounded-full" />
 
-      {/* LINE */}
       <div
         ref={lineRef}
         className="w-12 h-[2px] bg-black rounded-full mt-[8vh]"
       />
 
-      {/* WORDS */}
       <div className="flex gap-10 text-[6vw] font-semibold mt-16">
         {["熱心", "情感", "共感"].map((word, i) => (
           <div
@@ -346,7 +337,6 @@ const App = () => {
         ))}
       </div>
 
-      {/* FINAL TEXT */}
       <div
         ref={finalTextRef}
         className="mt-16 text-center text-[2vw] font-semibold text-black leading-snug"

@@ -122,12 +122,12 @@ gsap.to(".load",{
         <div className="font-semibold text-[3vw] mb-[50vh] text-center tracking-tight">
           タブレットやパソコンで外国人の先生<br />とオンライン小学生英会話指導
         </div>
-        <div className="font-semibold text-[3vw] text-center mt-[8vh]">週に２回一回目はマンツマン３０分<br />２回目はグループ３０分</div>
-        <div className="font-semibold text-[3vw] text-center mt-[8vh]">大事な絵本を読んだりフォニックスを使ったり</div>
-        <div className="font-semibold text-[3vw] text-center mt-[8vh]">歌や韻文を聞いたり</div>
-        <div className="font-semibold text-[3vw] text-center mt-[8vh]">楽しいパズルと記憶術</div>
-        <div className="font-semibold text-[3vw] text-center mt-[8vh]">モチベーションを高めたり</div>
-        <div className="font-semibold text-[3vw] text-center mt-[8vh] pb-[10vh]">小学校一年生から６年生まで</div>
+        <div className="font-semibold text-[3vw] text-center mt-[3vh]">週に２回一回目はマンツマン３０分<br />２回目はグループ３０分</div>
+        <div className="font-semibold text-[3vw] text-center mt-[3vh]">大事な絵本を読んだりフォニックスを使ったり</div>
+        <div className="font-semibold text-[3vw] text-center mt-[3vh]">歌や韻文を聞いたり</div>
+        <div className="font-semibold text-[3vw] text-center mt-[3vh]">楽しいパズルと記憶術</div>
+        <div className="font-semibold text-[3vw] text-center mt-[3vh]">モチベーションを高めたり</div>
+        <div className="font-semibold text-[3vw] text-center mt-[3vh] pb-[10vh]">小学校一年生から６年生まで</div>
       </div>
 
       {/* PATH SECTION */}
