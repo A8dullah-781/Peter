@@ -11,7 +11,7 @@ const Navbar = () => {
     if (!open) {
       // expand
       gsap.to(menuRef.current, {
-        width: "40vw",
+        width: "30vw",
         duration: 0.5,
         ease: "power3.inOut",
       });
@@ -47,7 +47,7 @@ const Navbar = () => {
       <div
         ref={menuRef}
         onClick={toggle}
-        className="bg-sky-500 border border-black text-white rounded-full flex items-center justify-between px-5 overflow-hidden cursor-pointer"
+        className=" border border-black text-black rounded-full flex items-center justify-between px-5 py-3 overflow-hidden cursor-pointer"
         style={{ width: "8vw", height: "3vw" }}
       >
         {/* LINKS */}
@@ -62,7 +62,7 @@ const Navbar = () => {
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
-              className="text-white text-sm font-medium hover:opacity-60 transition-opacity"
+              className="text-black text-[1.2vw] font-medium hover:opacity-60 transition-opacity"
               onClick={(e) => e.stopPropagation()}
             >
               {link}
@@ -83,3 +83,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import Home from "../Components/Home";
-import Navbar from "../Components/Navbar";
+// import React, { useEffect, useRef, useState } from "react";
+// import gsap from "gsap";
+// import Home from "../Components/Home";
+// import Navbar from "../Components/Navbar";
 
-const App = () => {
+// const App = () => {
 //   const [showHome, setShowHome] = useState(false);
 //   const ballRef = useRef(null);
 //   const lineRef = useRef(null);
@@ -146,50 +146,214 @@ const App = () => {
 //   if (showHome) return  (
 //   <>
 //     <Home />
-{/* <Navbar/> */}
+// <Navbar/>
 //   </>
 // );
+//   return (
+//     <div ref={loaderRef}>
+//       <div
+//         ref={containerRef}
+//         className="fixed inset-0 bg-sky-300 flex flex-col items-center justify-center"
+//       >
+//         <div ref={ballRef} className="w-8 h-8 bg-black rounded-full" />
+//         <div
+//           ref={lineRef}
+//           className="w-12 h-[2px] bg-black rounded-full mt-[8vh]"
+//         />
+//         <div
+//           ref={hRef}
+//           className="text-black pt-[5vh] lg:leading-13 whitespace-nowrap font-semibold text-center text-[5vw] md:text-[3vw]"
+//         >
+//           発達が気になるお子様に <br />
+//           最適な学び提供 <br />
+//           小学生英会話
+//         </div>
+//         <div
+//           ref={countRef}
+//           className="absolute bottom-16 text-black text-xl font-normal opacity-0"
+//         >
+//           0
+//         </div>
+//       </div>
+//       <div className="fixed inset-0 flex items-center justify-center overflow-hidden">
+//         {["熱心", "情感", "共感"].map((word, i) => (
+//           <div
+//             key={i}
+//             ref={(el) => (wordsRef.current[i] = el)}
+//             style={{ transform: "translateY(100vh)" }}
+//             className={`absolute text-[16vw] font-semibold ${i === 1 ? "text-black" : "text-blue-300"}`}
+//           >
+//             {word}
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+
+import React, { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import Home from "../Components/Home";
+import Navbar from "../Components/Navbar";
+import Faq from "../Components/Faq";
+import Video from "../Components/Video";
+
+const App = () => {
+  const [showHome, setShowHome] = useState(false);
+
+  const ballRef = useRef(null);
+  const lineRef = useRef(null);
+  const wordsRef = useRef([]);
+  const finalTextRef = useRef(null);
+  const loaderRef = useRef(null);
+
+  useEffect(() => {
+    const tl = gsap.timeline({
+      onComplete: () => {
+       gsap.to(loaderRef.current, {
+  opacity: 0,
+  y: -40, // thoda upar move bhi karega → premium feel
+  scale: 0.98, // subtle shrink
+  duration: 0.8,
+  delay: 0.3,
+  ease: "power2.out",
+  onComplete: () => {
+    setShowHome(true);
+  },
+});
+      },
+    });
+
+    // initial states
+    gsap.set(wordsRef.current, { opacity: 0, y: 20 });
+    gsap.set(finalTextRef.current, { opacity: 0, y: 20 });
+
+    // ✅ REALISTIC BOUNCE (your old logic but reusable)
+    const bounce = () => {
+      return gsap.timeline()
+        .to(ballRef.current, {
+          y: 60,
+          duration: 0.35,
+          ease: "power2.in",
+        })
+        .to(ballRef.current, {
+          scaleY: 0.65,
+          scaleX: 1.3,
+          duration: 0.06,
+          ease: "power1.inOut",
+          onStart: () => {
+            gsap.to(lineRef.current, {
+              scaleX: 0.4,
+              duration: 0.06,
+              ease: "power1.in",
+            });
+          },
+        })
+        .to(ballRef.current, {
+          y: 0,
+          scaleY: 1,
+          scaleX: 1,
+          duration: 0.32,
+          ease: "power2.out",
+          onStart: () => {
+            gsap.to(lineRef.current, {
+              scaleX: 1,
+              duration: 0.2,
+              ease: "power2.out",
+            });
+          },
+        });
+    };
+
+    // 🎯 SEQUENCE
+
+    // bounce 1 → word 1
+    tl.add(bounce())
+      .to(wordsRef.current[0], {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+      });
+
+    // bounce 2 → word 2
+    tl.add(bounce())
+      .to(wordsRef.current[1], {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+      });
+
+    // bounce 3 → word 3
+    tl.add(bounce())
+      .to(wordsRef.current[2], {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+      });
+
+    // final text
+    tl.add(bounce())
+    .to(finalTextRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+    });
+
+  }, []);
+
+  if (showHome) {
+    return (
+      <> <Navbar />
+        <Home />
+       <Video/>
+       <Faq/>
+      </>
+    );
+  }
+
   return (
-    // <div ref={loaderRef}>
-    //   <div
-    //     ref={containerRef}
-    //     className="fixed inset-0 bg-sky-300 flex flex-col items-center justify-center"
-    //   >
-    //     <div ref={ballRef} className="w-8 h-8 bg-black rounded-full" />
-    //     <div
-    //       ref={lineRef}
-    //       className="w-12 h-[2px] bg-black rounded-full mt-[8vh]"
-    //     />
-    //     <div
-    //       ref={hRef}
-    //       className="text-black pt-[5vh] lg:leading-13 whitespace-nowrap font-semibold text-center text-[5vw] md:text-[3vw]"
-    //     >
-    //       発達が気になるお子様に <br />
-    //       最適な学び提供 <br />
-    //       小学生英会話
-    //     </div>
-    //     <div
-    //       ref={countRef}
-    //       className="absolute bottom-16 text-black text-xl font-normal opacity-0"
-    //     >
-    //       0
-    //     </div>
-    //   </div>
-    //   <div className="fixed inset-0 flex items-center justify-center overflow-hidden">
-    //     {["熱心", "情感", "共感"].map((word, i) => (
-    //       <div
-    //         key={i}
-    //         ref={(el) => (wordsRef.current[i] = el)}
-    //         style={{ transform: "translateY(100vh)" }}
-    //         className={`absolute text-[16vw] font-semibold ${i === 1 ? "text-black" : "text-blue-300"}`}
-    //       >
-    //         {word}
-    //       </div>
-    //     ))}
-    //   </div>
-    // </div>
-   <> <Navbar/>
-    <Home /></>
+    <div
+      ref={loaderRef}
+      className="fixed inset-0 bg-sky-100 flex flex-col items-center justify-center"
+    >
+      {/* BALL */}
+      <div
+        ref={ballRef}
+        className="w-8 h-8 bg-black rounded-full"
+      />
+
+      {/* LINE */}
+      <div
+        ref={lineRef}
+        className="w-12 h-[2px] bg-black rounded-full mt-[8vh]"
+      />
+
+      {/* WORDS */}
+      <div className="flex gap-10 text-[6vw] font-semibold mt-16">
+        {["熱心", "情感", "共感"].map((word, i) => (
+          <div
+            key={i}
+            ref={(el) => (wordsRef.current[i] = el)}
+            className={`${i === 1 ? "text-black" : "text-blue-400"}`}
+          >
+            {word}
+          </div>
+        ))}
+      </div>
+
+      {/* FINAL TEXT */}
+      <div
+        ref={finalTextRef}
+        className="mt-16 text-center text-[2vw] font-semibold text-black leading-snug"
+      >
+        発達が気になるお子様に最適な学び提供小学生英会話
+      </div>
+    </div>
   );
 };
 

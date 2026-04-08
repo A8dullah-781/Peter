@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 body{
-    background-color: skyblue;
+    background-color: #7DD3FC;
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 /* 🌤 SKY BACKGROUND */
@@ -12,7 +14,7 @@ body{
     #E5F2FF 0%,
     #C9E6FF 30%,
     #8ACEFF 60%,
-    #44B5F6 100%
+    #7DD3FC 100%
   );
 }
 
