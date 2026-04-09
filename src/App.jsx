@@ -325,7 +325,7 @@ const App = () => {
         className="w-12 h-[2px] bg-black rounded-full mt-[8vh]"
       />
 
-      <div className="flex gap-10 text-[6vw] font-semibold mt-16">
+      <div className="flex lg:gap-10 gap-4 text-[10vw] md:text-[6vw] font-semibold mt-16">
         {["熱心", "情感", "共感"].map((word, i) => (
           <div
             key={i}
@@ -339,9 +339,9 @@ const App = () => {
 
       <div
         ref={finalTextRef}
-        className="mt-16 text-center text-[2vw] font-semibold text-black leading-snug"
+        className="mt-16 text-center text-[4vw] lg:text-[2vw] font-semibold text-black leading-snug"
       >
-        発達が気になるお子様に最適な学び提供小学生英会話
+        発達が気になるお子様に最適 <br />な学び提供小学生英会話
       </div>
     </div>
   );

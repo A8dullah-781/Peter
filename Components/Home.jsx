@@ -10,7 +10,7 @@ const Home = () => {
   const leftLine = useRef(null);
   const rightLine = useRef(null);
   const circleRef = useRef(null);
-  const ballRef = useRef(null);  // now points to <circle> inside SVG
+  const ballRef = useRef(null); // now points to <circle> inside SVG
   const pathRef = useRef(null);
 
   useEffect(() => {
@@ -44,11 +44,12 @@ const Home = () => {
 
     // Ball is a <circle> inside the SVG — same coordinate space as the path
     gsap.to(ballRef.current, {
+      ease: "power1.inOut", // smooth but with slight resistance
       scrollTrigger: {
         trigger: pathRef.current,
         start: "top 30%",
         end: "bottom center",
-        scrub: 1.5,
+        scrub: 3, // higher = more lag/scrubby drag behind scroll
       },
       motionPath: {
         path: pathRef.current,
@@ -59,34 +60,34 @@ const Home = () => {
     });
 
     // Hide ball initially
-gsap.set(ballRef.current, { opacity: 0 });
+    gsap.set(ballRef.current, { opacity: 0 });
 
-gsap.to(ballRef.current, {
-  scrollTrigger: {
-    trigger: pathRef.current,
-    start: "top 30%",
-    end: "bottom center",
-    scrub: 4,
-    onEnter: () => {
-      gsap.to(ballRef.current, { opacity: 1, duration: 0.6 });
-    },
-    onLeaveBack: () => {
-      gsap.to(ballRef.current, { opacity: 0, duration: 0.3 });
-    },
-  },
-  motionPath: {
-    path: pathRef.current,
-    align: pathRef.current,
-    alignOrigin: [0.2, 0.5],
-    autoRotate: false,
-  },
-});
+    gsap.to(ballRef.current, {
+      scrollTrigger: {
+        trigger: pathRef.current,
+        start: "top 30%",
+        end: "bottom center",
+        scrub: 4,
+        onEnter: () => {
+          gsap.to(ballRef.current, { opacity: 1, duration: 0.6 });
+        },
+        onLeaveBack: () => {
+          gsap.to(ballRef.current, { opacity: 0, duration: 0.3 });
+        },
+      },
+      motionPath: {
+        path: pathRef.current,
+        align: pathRef.current,
+        alignOrigin: [0.2, 0.5],
+        autoRotate: false,
+      },
+    });
 
-gsap.to(".load",{
-  opacity: 0,
-  duration: 0.8,
-  display: "none",
-})
+    gsap.to(".load", {
+      opacity: 0,
+      duration: 0.8,
+      display: "none",
+    });
 
     return () => {
       pinTrigger.kill();
@@ -95,39 +96,82 @@ gsap.to(".load",{
   }, []);
 
   return (
-    <div className="sky-bg w-screen">
+    <div className="sky-bg overflow-x-hidden w-screen">
+    <div className="lg:block hidden">
+        <img
+        className="absolute w-[30vw] top-15  z-50 left-12"
+        src="/images/onlyc.svg"
+        alt="cloud"
+      />
+      <img
+        className="absolute w-[30vw] top-1/2 z-50  -left-14"
+        src="/images/leftc.svg"
+        alt="cloud"
+      />
+      <img
+        className="absolute w-[40vw] top-1/2 z-50  -right-44"
+        src="/images/rightc.svg"
+        alt="cloud"
+      />
+    </div>
+
       <div className="h-screen load w-screen absolute top-0 left-0 z-50 bg-sky-300"></div>
 
       {/* HEADER */}
-      <div className="h-[15vh] bg-white flex items-center p-[1vw] -mt-[1vw] w-full">
-        <img className="w-[6vw] invert" src="/images/360logo.png" alt="logo" />
+      <div className="h-[15vh] bg-white flex items-center p-[1.3vw] -mt-[3vh] lg:-mt-[1vw] w-full">
+        <img className="w-[20vw] md:w-[12vw] lg:w-[6vw] invert" src="/images/360logo.png" alt="logo" />
       </div>
 
       {/* PIN SECTION */}
       <div
         ref={pinRef}
-        className="h-[30vh] bg-white flex justify-center items-center w-full relative"
+        className="h-[30vh] z-40 bg-white flex justify-center items-center w-full relative"
       >
-        <div ref={leftLine} className="h-[2px] w-[46.5vw] absolute left-0 bottom-0 bg-black" />
+        <div
+          ref={leftLine}
+          z-50
+          className="h-[2px] w-[40vw] md:w-[46.5vw] absolute left-0 bottom-0 bg-black"
+        />
         <div
           ref={circleRef}
-          className="h-[7vw] w-[7vw] flex sky-ball justify-center absolute -bottom-[3.5vw] items-center rounded-full border border-black"
+          className="lg:h-[7vw] lg:w-[7vw] md:h-[14vw] md:w-[14vw] z-50 h-[20vw] w-[20vw] flex sky-ball justify-center absolute -bottom-[5vh] lg:-bottom-[3.5vw] items-center rounded-full border border-black"
+        >
+          <div className="h-[3vh] ourball z-10 w-[3vh] bg-black rounded-full" />
+        </div>
+        <div
+          ref={rightLine}
+          z-50
+          className="h-[2px] w-[40vw] md:w-[46.5vw] absolute right-0 bottom-0 bg-black"
         />
-        <div className="h-[3vh] ourball absolute -bottom-[1.2vh] w-[3vh] bg-black rounded-full" />
-        <div ref={rightLine} className="h-[2px] w-[46.5vw] absolute right-0 bottom-0 bg-black" />
       </div>
 
       {/* TEXT */}
-      <div className="flex flex-col sky-text bg-[#7DD3FC] w-full pt-[15vh]">
-        <div className="font-semibold text-[3vw] mb-[50vh] text-center tracking-tight">
-          タブレットやパソコンで外国人の先生<br />とオンライン小学生英会話指導
+      <div className="flex flex-col px-[7.5vw] sky-text bg-[#7DD3FC] w-full pt-[15vh]">
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] mb-[30vh] md:mb-[50vh] text-center tracking-tight">
+          タブレットやパソコンで外国人の先生
+          <br />
+          とオンライン小学生英会話指導
         </div>
-        <div className="font-semibold text-[3vw] text-center mt-[3vh]">週に２回一回目はマンツマン３０分<br />２回目はグループ３０分</div>
-        <div className="font-semibold text-[3vw] text-center mt-[3vh]">大事な絵本を読んだりフォニックスを使ったり</div>
-        <div className="font-semibold text-[3vw] text-center mt-[3vh]">歌や韻文を聞いたり</div>
-        <div className="font-semibold text-[3vw] text-center mt-[3vh]">楽しいパズルと記憶術</div>
-        <div className="font-semibold text-[3vw] text-center mt-[3vh]">モチベーションを高めたり</div>
-        <div className="font-semibold text-[3vw] text-center mt-[3vh] pb-[10vh]">小学校一年生から６年生まで</div>
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
+          週に２回一回目はマンツマン３０分
+          <br />
+          ２回目はグループ３０分
+        </div>
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
+          大事な絵本を読んだりフォニックスを使ったり
+        </div>
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
+          歌や韻文を聞いたり
+        </div>
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
+          楽しいパズルと記憶術
+        </div>
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
+          モチベーションを高めたり
+        </div>
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh] pb-[10vh]">
+          小学校一年生から６年生まで
+        </div>
       </div>
 
       {/* PATH SECTION */}
@@ -146,17 +190,19 @@ gsap.to(".load",{
           />
 
           {/* Ball lives inside SVG — shares the same coordinate system as the path */}
-          <circle
-            ref={ballRef}
-            cx="119.548"
-            cy="3"
-            r="6"
-            fill="black"
-          />
+          <circle ref={ballRef} cx="119.548" cy="3" r="6" fill="black" />
         </svg>
 
-        <img className="absolute w-[50vw] mt-[20vh] bottom-0 -left-20" src="/images/left.png" alt="leftsvgs" />
-        <img className="absolute w-[50vw] mt-[20vh] bottom-0 -right-20" src="/images/right.png" alt="rightsvgs" />
+        <img
+          className="absolute w-[50vw] mt-[20vh] bottom-0 -left-20"
+          src="/images/left.png"
+          alt="leftsvgs"
+        />
+        <img
+          className="absolute w-[50vw] mt-[20vh] bottom-0 -right-20"
+          src="/images/right.png"
+          alt="rightsvgs"
+        />
       </div>
     </div>
   );

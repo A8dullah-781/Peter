@@ -131,6 +131,7 @@ const Faq = () => {
   }
 
   return (
+    <>
     <div style={{
       minHeight: '100vh',
       width: '100%',
@@ -182,6 +183,9 @@ const Faq = () => {
         ))}
       </div>
     </div>
+
+    <div> <img className='w-full' src="/images/cloudfooter.svg" alt="footer" /></div>
+    </>
   )
 }
 

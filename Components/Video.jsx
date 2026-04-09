@@ -60,10 +60,12 @@ const Video = () => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center py-[10vh]">
+    <div className="w-full h-full flex justify-center items-center py-[10vh]">
+      
+    
       <div
         ref={containerRef}
-        className="relative w-[80vw] overflow-hidden rounded-2xl opacity-0"
+        className="relative z-10 w-[80vw] overflow-hidden rounded-2xl opacity-0"
       >
         <video
           ref={videoRef}
