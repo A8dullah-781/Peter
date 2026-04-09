@@ -1,122 +1,145 @@
 import React, { useState, useRef, useEffect } from 'react'
 
-const faqs = [
+const sections = [
   {
-    q: "What age groups do you teach?",
-    a: "We teach elementary school students from grade 1 through grade 6, ages 6 to 12. Our curriculum is carefully designed to match each grade level's learning pace and vocabulary needs."
+    label: 'NO',
+    labelJp: 'いいえ',
+    color: '#ef4444',
+    lightColor: '#fef2f2',
+    borderColor: '#fecaca',
+    faqs: [
+      { q: 'Is there a contract?', jp: '契約はありますか？', a: 'No. There is no contract required.', aJp: '契約は必要ありません。' },
+      { q: 'Do I need some English ability to start?', jp: 'レッスンを始めるには英語力が必要ですか？', a: 'No. No prior English ability is needed.', aJp: '事前の英語力は必要ありません。' },
+      { q: 'Can I use a smartphone?', jp: 'スマートフォンでレッスンに参加できますか？', a: 'No. A tablet or computer is required.', aJp: 'タブレットまたはパソコンが必要です。' },
+      { q: 'Can I reschedule a class?', jp: 'レッスンの日程変更はできますか？', a: 'No. Make-up lessons or rescheduling is not permitted. However, you may join late.', aJp: '補講やレッスンの日程変更はできません。ただし、途中参加は可能です。' },
+      { q: 'Will I get a certificate?', jp: 'コース修了後に修了証はもらえますか？', a: 'No. We do not issue certificates at this time.', aJp: '現在、修了証の発行は行っておりません。' },
+      { q: 'Is there homework or self-study materials?', jp: '宿題や自習教材はありますか？', a: 'No. All learning takes place during lessons.', aJp: 'すべての学習はレッスン中に行われます。' },
+      { q: 'Do I need to buy textbooks?', jp: '教科書を購入する必要がありますか？', a: 'No. All materials are provided by the teacher.', aJp: '教材はすべて先生が提供します。' },
+      { q: 'Do you offer refunds?', jp: '返金はありますか？', a: 'No. We do not offer refunds.', aJp: '返金は承っておりません。' },
+      { q: 'Do you offer discounts?', jp: '割引はありますか？', a: 'No. There are no discounts available at this time.', aJp: '現在、割引は行っておりません。' },
+      { q: 'Do you offer in-person lessons at home?', jp: '自宅での対面レッスンはありますか？', a: 'No. All lessons are conducted online only.', aJp: 'すべてのレッスンはオンラインのみで行われます。' },
+    ]
   },
   {
-    q: "How are the online lessons structured?",
-    a: "Each week includes two sessions: the first is a 30-minute one-on-one lesson with a foreign teacher, and the second is a 30-minute group session. This balance helps build both confidence and conversational fluency."
+    label: 'YES',
+    labelJp: 'はい',
+    color: '#16a34a',
+    lightColor: '#f0fdf4',
+    borderColor: '#bbf7d0',
+    faqs: [
+      { q: 'Do you offer a free trial class?', jp: '無料体験レッスンはありますか？', a: 'Yes. We offer a free trial lesson with no obligation.', aJp: 'はい。義務なしで無料体験レッスンをご提供しています。' },
+      { q: 'Can you quit anytime?', jp: 'いつでも解約できますか？', a: 'Yes. You can cancel your registration at any time by emailing PJ Sensei.', aJp: 'はい。PJ先生にメールを送ることでいつでも登録をキャンセルできます。' },
+      { q: 'Are your teachers native speakers?', jp: '講師はネイティブスピーカーですか？', a: 'Yes. All teachers are native English-speaking professionals.', aJp: 'はい。すべての講師は英語を母国語とするプロフェッショナルです。' },
+      { q: 'Are all lessons with a teacher?', jp: 'オンラインレッスンはすべて講師によるものですか？', a: 'Yes. Every lesson is conducted by a qualified teacher.', aJp: 'はい。すべてのレッスンは資格のある講師が行います。' },
+      { q: 'Can you send an invoice after payment?', jp: 'レッスン料金を支払った後、請求書を送ってもらえますか？', a: 'Yes. An invoice can be sent upon request after payment.', aJp: 'はい。お支払い後、ご要望に応じて請求書をお送りします。' },
+      { q: 'Can my child increase lesson frequency?', jp: 'レッスンの頻度を増やすことはできますか？', a: 'Yes. If your child wants more lessons, increased frequency is possible. Please consult PJ Sensei.', aJp: 'はい。お子様がより多くのレッスンを希望する場合、頻度を増やすことが可能です。PJ先生にご相談ください。' },
+    ]
   },
   {
-    q: "What equipment do I need to join the classes?",
-    a: "All you need is a tablet or computer with a stable internet connection and a camera. We recommend using headphones for the best audio quality during lessons."
-  },
-  {
-    q: "Who are the teachers?",
-    a: "All our teachers are native English-speaking professionals with experience in teaching children. They are carefully selected and trained in our phonics-based curriculum."
-  },
-  {
-    q: "What teaching methods do you use?",
-    a: "We use a combination of phonics instruction, picture book reading, songs, rhymes, memory techniques, and fun puzzles. This multi-sensory approach keeps children engaged and accelerates learning."
-  },
-  {
-    q: "How do you keep children motivated?",
-    a: "We use gamified rewards, encouraging feedback, and interactive activities that make learning feel like play. Progress milestones and achievement badges also help sustain long-term motivation."
-  },
-  {
-    q: "Can I try a lesson before committing?",
-    a: "Yes! We offer a free trial lesson so your child can experience the class format, meet a teacher, and see if it's a good fit — with no obligation to continue."
-  },
-  {
-    q: "How do I track my child's progress?",
-    a: "Parents receive regular progress reports after each lesson cycle. You can also access a dashboard showing attendance, topics covered, and teacher feedback at any time."
-  },
-  {
-    q: "What happens if we miss a lesson?",
-    a: "We understand that schedules can change. Missed lessons can be rescheduled up to 24 hours in advance. We also record group sessions so students can catch up if needed."
-  },
-  {
-    q: "How do I enroll my child?",
-    a: "Simply fill out the enrollment form on our website, choose a suitable time slot, and complete the registration. Our team will reach out within 24 hours to confirm your schedule and get started."
-  },
+    label: 'Details',
+    labelJp: '詳細',
+    color: '#0369a1',
+    lightColor: '#f0f9ff',
+    borderColor: '#bae6fd',
+    faqs: [
+      {
+        q: 'From what age can I join?', jp: '何歳からレッスンに参加できますか？',
+        a: 'Ages 6 to 12 years old (Grade 1 to Grade 6).', aJp: '6歳から12歳まで（小学1年生から6年生）。'
+      },
+      {
+        q: 'How much is the monthly fee?', jp: '月謝はいくらですか？',
+        a: '6,000 yen per month.', aJp: '月額6,000円です。'
+      },
+      {
+        q: 'How do you pay?', jp: '支払い方法は？',
+        a: 'Payment is usually made via the PayPay app. Other payment options are available upon consultation.', aJp: '通常はPayPayアプリでのお支払いとなります。その他の支払い方法についてはご相談ください。'
+      },
+      {
+        q: 'How do I register and start lessons?', jp: '登録とレッスン開始方法は？',
+        a: 'Send PJ Sensei an email to begin registration and start lessons.', aJp: 'レッスン開始をご希望の方は、PJ先生までメールでご連絡ください。'
+      },
+      {
+        q: 'What teaching methods and materials are used?', jp: 'どのような指導方法と教材を使用していますか？',
+        a: 'We use a dynamic method based on the cognitive strengths of each child. Activities include phonics, conversation, listening, picture books, songs, chants, and interactive drawing activities. All books, music, and phonics materials are created by professional artists and musicians. Materials follow the ESL syllabus from Grade 1 to Grade 6.',
+        aJp: 'お子様一人ひとりの認知能力に合わせたダイナミックな指導法を採用しています。フォニックス、会話、リスニング、絵本、歌、チャント、インタラクティブな描画活動を取り入れています。絵本・音楽・フォニックス教材はプロのアーティストとミュージシャンが制作。教材は小1〜小6のESL語彙・文法目標に沿ったものです。'
+      },
+      {
+        q: 'How many lessons per year and how long?', jp: 'レッスンの回数と各レッスンの時間は？',
+        a: 'There are 86 lessons per year (30 minutes each), based on an April–March cycle. Generally two times a week: 30 minutes one-on-one, then 30 minutes in a group.',
+        aJp: '年間86レッスン（各30分）、4月〜3月のサイクルです。通常週2回：1回目はマンツーマン30分、2回目はグループ30分。'
+      },
+      {
+        q: 'What equipment do I need?', jp: '必要な機材は？',
+        a: 'A tablet or computer, child-sized headphones, and an internet connection.', aJp: 'タブレットまたはパソコン、子供用ヘッドホン、インターネット接続が必要です。'
+      },
+      {
+        q: 'What software do I need?', jp: 'ダウンロードするソフトウェアは？',
+        a: 'It is recommended to download the Zoom app for a smooth learning experience.', aJp: 'スムーズな学習のためにZoomアプリのダウンロードをお勧めします。'
+      },
+      {
+        q: 'What if I am late or miss a class?', jp: '遅刻や欠席した場合はどうなりますか？',
+        a: 'You may join late, but make-up lessons and rescheduling are not permitted.', aJp: '途中参加は可能ですが、補講やレッスンの日程変更はできません。'
+      },
+      {
+        q: 'How is progress assessed?', jp: '学習の進捗はどのように評価されますか？',
+        a: 'PJ Sensei will send a progress report email to parents at the end of each school term.', aJp: 'PJ先生は各学期末に保護者の方へ学習進捗レポートをメールでお送りします。'
+      },
+      {
+        q: 'How many students are in a group lesson?', jp: 'グループレッスンの生徒数は？',
+        a: 'The number of students is not fixed and may fluctuate from time to time.', aJp: 'グループの生徒数は固定されておらず、状況によって変動します。'
+      },
+      {
+        q: 'How do I cancel my registration?', jp: '登録をキャンセルするには？',
+        a: 'Send an email to PJ Sensei and your registration will be cancelled promptly.', aJp: 'PJ先生にメールを送っていただければ、登録をキャンセルできます。'
+      },
+    ]
+  }
 ]
 
-const FAQItem = ({ faq, isOpen, onClick }) => {
+const FAQItem = ({ faq, isOpen, onClick, accentColor }) => {
   const bodyRef = useRef(null)
   const [height, setHeight] = useState(0)
 
   useEffect(() => {
-    if (bodyRef.current) {
-      setHeight(isOpen ? bodyRef.current.scrollHeight : 0)
-    }
+    setHeight(isOpen ? bodyRef.current.scrollHeight : 0)
   }, [isOpen])
 
   return (
     <div
       onClick={onClick}
       style={{
-        borderBottom: '1px solid rgba(0,0,0,0.1)',
         cursor: 'pointer',
+        borderBottom: '1px solid rgba(0,0,0,0.06)',
         transition: 'background 0.2s',
-        padding: '0 0.5rem',
         borderRadius: '8px',
-        background: isOpen ? 'rgba(255,255,255,0.35)' : 'transparent',
+        background: isOpen ? 'rgba(255,255,255,0.5)' : 'transparent',
+        padding: '0 0.75rem',
       }}
     >
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1.1rem 0.5rem',
-        gap: '1rem',
-      }}>
-        <span style={{
-          fontSize: '1.05rem',
-          fontWeight: '600',
-          color: '#1e3a5f',
-          lineHeight: 1.4,
-        }}>
-          {faq.q}
-        </span>
-
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem 0.25rem', gap: '1rem' }}>
+        <div>
+          <div style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a', lineHeight: 1.4 }}>{faq.q}</div>
+          <div style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '2px' }}>{faq.jp}</div>
+        </div>
         <div style={{
-          width: '28px',
-          height: '28px',
-          minWidth: '28px',
-          borderRadius: '50%',
-          background: isOpen ? '#1e3a5f' : 'rgba(255,255,255,0.6)',
-          border: '1.5px solid #1e3a5f',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          width: '26px', height: '26px', minWidth: '26px', borderRadius: '50%',
+          background: isOpen ? accentColor : 'rgba(255,255,255,0.7)',
+          border: `1.5px solid ${accentColor}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
           transition: 'all 0.3s ease',
+          flexShrink: 0,
         }}>
-          <svg
-            width="12" height="12" viewBox="0 0 12 12"
-            style={{ transition: 'transform 0.3s ease', transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
-          >
-            <line x1="6" y1="1" x2="6" y2="11" stroke={isOpen ? 'white' : '#1e3a5f'} strokeWidth="1.8" strokeLinecap="round" />
-            <line x1="1" y1="6" x2="11" y2="6" stroke={isOpen ? 'white' : '#1e3a5f'} strokeWidth="1.8" strokeLinecap="round" />
+          <svg width="11" height="11" viewBox="0 0 12 12" style={{ transition: 'transform 0.3s ease', transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+            <line x1="6" y1="1" x2="6" y2="11" stroke={isOpen ? 'white' : accentColor} strokeWidth="2" strokeLinecap="round" />
+            <line x1="1" y1="6" x2="11" y2="6" stroke={isOpen ? 'white' : accentColor} strokeWidth="2" strokeLinecap="round" />
           </svg>
         </div>
       </div>
 
-      <div style={{
-        height: `${height}px`,
-        overflow: 'hidden',
-        transition: 'height 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-      }}>
-        <div ref={bodyRef} style={{ padding: '0 0.5rem 1.1rem', }}>
-          <p style={{
-            margin: 0,
-            fontSize: '0.95rem',
-            color: '#2c4a6e',
-            lineHeight: 1.7,
-          }}>
-            {faq.a}
-          </p>
+      <div style={{ height: `${height}px`, overflow: 'hidden', transition: 'height 0.38s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+        <div ref={bodyRef} style={{ padding: '0 0.25rem 1.2rem' }}>
+          <p style={{ margin: '0 0 0.4rem', fontSize: '0.98rem', color: '#1e293b', lineHeight: 1.75 }}>{faq.a}</p>
+          <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: 1.75, fontStyle: 'italic' }}>{faq.aJp}</p>
         </div>
       </div>
     </div>
@@ -126,65 +149,85 @@ const FAQItem = ({ faq, isOpen, onClick }) => {
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null)
 
-  const handleClick = (index) => {
-    setOpenIndex(prev => prev === index ? null : index)
+  const handleClick = (sectionIdx, faqIdx) => {
+    const key = `${sectionIdx}-${faqIdx}`
+    setOpenIndex(prev => prev === key ? null : key)
   }
 
   return (
     <>
-    <div style={{
-      minHeight: '100vh',
-      width: '100%',
-      background: '#7DD3FC',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '5rem 7.5vw',
-
-    }}>
-      <h2 style={{
-        fontSize: 'clamp(1.6rem, 4vw, 2.4rem)',
-        fontWeight: '700',
-        color: '#1e3a5f',
-        marginBottom: '0.5rem',
-        textAlign: 'center',
-        letterSpacing: '-0.02em',
-      }}>
-        よくある質問
-      </h2>
-      <p style={{
-        color: '#2c4a6e',
-        marginBottom: '3rem',
-        fontSize: '1rem',
-        textAlign: 'center',
-      }}>
-        Frequently Asked Questions
-      </p>
-
       <div style={{
-        width: '100%',
-        maxWidth: '1220px',
-        background: 'rgba(255,255,255,0.25)',
-        backdropFilter: 'blur(8px)',
-        borderRadius: '16px',
-        border: '1px solid rgba(255,255,255,0.5)',
-        padding: '0.5rem 1rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.2rem',
+        minHeight: '100vh', width: '100%', background: '#7DD3FC',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        padding: '6rem 7.5vw',
+        fontFamily: "'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif",
       }}>
-        {faqs.map((faq, i) => (
-          <FAQItem
-            key={i}
-            faq={faq}
-            isOpen={openIndex === i}
-            onClick={() => handleClick(i)}
-          />
-        ))}
-      </div>
-    </div>
 
-    <div> <img className='w-full' src="/images/cloudfooter.svg" alt="footer" /></div>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '1rem' }}>
+            <span style={{ display: 'inline-block', width: '32px', height: '2px', background: '#1e3a5f' }} />
+            <span style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#1e3a5f' }}>
+              Frequently Asked Questions
+            </span>
+            <span style={{ display: 'inline-block', width: '32px', height: '2px', background: '#1e3a5f' }} />
+          </div>
+          <h2 style={{
+            fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: '800',
+            color: '#0f172a', margin: 0, letterSpacing: '-0.03em', lineHeight: 1.1,
+          }}>
+            よくある質問
+          </h2>
+        </div>
+
+        {/* Sections */}
+        <div style={{ width: '100%', maxWidth: '860px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {sections.map((section, sIdx) => (
+            <div key={sIdx}>
+
+              {/* Section header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+              <div style={{
+  color: section.color,
+  fontSize: '1rem',
+  fontWeight: '600',
+  letterSpacing: '0.2em',
+  textTransform: 'uppercase',
+  flexShrink: 0,
+}}>
+  {section.label}
+</div>
+                <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.12)' }} />
+                <span style={{ fontSize: '0.8rem', color: '#1e3a5f', fontWeight: '600', flexShrink: 0 }}>
+                  {section.labelJp}
+                </span>
+              </div>
+
+              {/* Cards */}
+              <div style={{
+                background: 'rgba(255,255,255,0.28)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '16px',
+                border: '1px solid rgba(255,255,255,0.55)',
+                padding: '0.4rem 0.5rem',
+                display: 'flex', flexDirection: 'column',
+              }}>
+                {section.faqs.map((faq, fIdx) => (
+                  <FAQItem
+                    key={fIdx}
+                    faq={faq}
+                    isOpen={openIndex === `${sIdx}-${fIdx}`}
+                    onClick={() => handleClick(sIdx, fIdx)}
+                    accentColor={section.color}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div><img className='w-full' src="/images/cloudfooter.svg" alt="footer" /></div>
     </>
   )
 }

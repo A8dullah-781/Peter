@@ -201,6 +201,7 @@ import Navbar from "../Components/Navbar";
 import Faq from "../Components/Faq";
 import Video from "../Components/Video";
 import Lenis from "lenis";
+import Details from "../Components/Details";
 
 const App = () => {
   const [showHome, setShowHome] = useState(false);
@@ -308,6 +309,7 @@ const App = () => {
         <Navbar />
         <Home />
         <Video />
+        <Details/>
         <Faq />
       </>
     );
