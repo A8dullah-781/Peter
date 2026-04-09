@@ -20,6 +20,7 @@ const text1Ref = useRef(null); // Books  - top-[90vh]
 const text2Ref = useRef(null); // Mind   - top-[120vh]
 const text3Ref = useRef(null); // Study  - top-[160vh]
 const text4Ref = useRef(null); // Games  - top-[225vh]
+const text5Ref = useRef(null); // Games  - top-[225vh]
 
   useEffect(() => {
 
@@ -98,7 +99,7 @@ gsap.to(ballRef.current, {
 });
 
 // ── 4. Text cards fade in when ball reaches them ──────────────
-const textRefs = [text1Ref, text2Ref, text3Ref, text4Ref];
+const textRefs = [text1Ref, text2Ref];
 
 // Hide all text cards initially
 gsap.set(textRefs.map(r => r.current), { opacity: 0, scale: 0.8 });
@@ -106,7 +107,22 @@ gsap.set(textRefs.map(r => r.current), { opacity: 0, scale: 0.8 });
 textRefs.forEach((ref) => {
   ScrollTrigger.create({
     trigger:  ref.current,
-    start:    "top 50%",   // when card enters 70% down the viewport
+    start:    "top 70%",   // when card enters 70% down the viewport
+    end:      "top 30%",
+    scrub:    1,
+    onEnter:     () => gsap.to(ref.current, { opacity: 1, scale: 1, duration: 0.4 }),
+    onLeaveBack: () => gsap.to(ref.current, { opacity: 0, scale: 0.8, duration: 0.3 }),
+  });
+});
+const texttRefs = [ text3Ref, text4Ref, text5Ref];
+
+// Hide all text cards initially
+gsap.set(texttRefs.map(r => r.current), { opacity: 0, scale: 0.8 });
+
+texttRefs.forEach((ref) => {
+  ScrollTrigger.create({
+    trigger:  ref.current,
+    start:    "top 90%",   // when card enters 70% down the viewport
     end:      "top 30%",
     scrub:    1,
     onEnter:     () => gsap.to(ref.current, { opacity: 1, scale: 1, duration: 0.4 }),
@@ -198,13 +214,13 @@ textRefs.forEach((ref) => {
               what the browser renders — ball never drifts off path
       ──────────────────────────────────────────────────────────── */}
       {/* PATH SECTION */}
-<div className="bg-[#7DD3FC] lg:block hidden main relative h-[50vh] md:h-[110vh] lg:h-[320vh] w-screen overflow-hidden">
+<div className="bg-[#7DD3FC] lg:block hidden main relative h-[50vh] md:h-[110vh] lg:h-[280vh] w-screen overflow-hidden">
 
   {/* Center wrapper — positions SVG in the middle of the section */}
   <div className="absolute inset-0 flex justify-center items-start">
     <svg
       ref={svgRef}
-      className="lg:w-[60vw] w-[60vw] md:w-[40vw] h-full pointer-events-none z-30"
+      className="lg:w-[60vw] lg:h-[300vh] w-[60vw] md:w-[40vw] h-full pointer-events-none z-30"
       viewBox="0 0 300 1101"
       preserveAspectRatio="xMidYMid meet"
     >
@@ -221,24 +237,39 @@ textRefs.forEach((ref) => {
   </div>
 
   {/* Decorative side images */}
-  <img className="absolute w-[50vw] mt-[20vh] bottom-0 -left-10 md:-left-20" src="/images/left.png" alt="" />
-  <img className="absolute w-[50vw] mt-[20vh] bottom-0 -right-10 md:-right-20" src="/images/right.png" alt="" />
   
-  <div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[90vh] text-[2vw] font-semibold -rotate-12 right-[20vw]">
-<div ref={text1Ref} >Books</div>
+  
+  <div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[90vh] text-[2vw] font-semibold  right-[20vw]">
+<div ref={text1Ref} >Boat</div>
   </div>
+  <img className="absolute w-[25vw] top-[50vh] right-[10vw] invert" src="/images/svgs/boat.png" alt="boat" />
 
 <div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[120vh] text-[2vw] font-semibold left-[20vw]">
-  <div ref={text2Ref} >Books</div>
+  <div ref={text2Ref} >Fire Truck</div>
 </div>
 
-<div  className="h-[20vh] w-[20vw] text-[2vw] font-semibold border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[160vh] -rotate-40 right-[20vw]">
-  <div ref={text3Ref} >Books</div>
+  <img className="absolute w-[28vw] top-[90vh] left-[7vw] invert" src="/images/svgs/truck.png" alt="boat" />
+
+<div  className="h-[20vh] w-[20vw] text-[2vw] font-semibold border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[172vh] -rotate-12  right-[16vw]">
+  <div ref={text3Ref} >Cake</div>
 </div>
 
-<div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[225vh] text-[2vw] font-semibold -rotate-8 right-[24vw]">
-  <div ref={text4Ref} >Books</div>
+  <img className="absolute w-[28vw] top-[130vh] right-[10vw] invert" src="/images/svgs/cake.png" alt="boat" />
+
+
+  <img className="absolute w-[28vw] top-[90vh] left-[7vw] invert" src="/images/svgs/truck.png" alt="boat" />
+
+<div  className="h-[20vh] w-[20vw] text-[2vw] font-semibold border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[202vh]   left-[16vw]">
+  <div ref={text4Ref} >Apple</div>
 </div>
+
+  <img className="absolute w-[28vw] top-[150vh] left-[10vw] invert" src="/images/svgs/apple.png" alt="boat" />
+
+<div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[247vh] text-[2vw] font-semibold  right-[20vw]">
+  <div ref={text5Ref} >Clock</div>
+</div>
+
+  <img className="absolute w-[28vw] top-[187vh] right-[13vw] invert" src="/images/svgs/clock.png" alt="boat" />
 </div>
 
     </div>
