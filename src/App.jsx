@@ -297,7 +297,7 @@ const App = () => {
     y: 0,
     duration: 0.6,
   })
-  .to({}, { duration: 1.5 });
+  .to({}, { duration: 1.5 }); 
 
     return () => {
       lenis.destroy();

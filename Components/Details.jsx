@@ -131,7 +131,7 @@ const Details = () => {
   }, [])
 
   return (
-    <div
+    <div id='about'
       ref={sectionRef}
       style={{
         width: '100%',

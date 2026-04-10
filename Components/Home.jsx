@@ -150,7 +150,7 @@ texttRefs.forEach((ref) => {
 
 
   return (
-    <div className="sky-bg overflow-x-hidden w-screen">
+    <div id="home" className="sky-bg overflow-x-hidden w-screen">
       
 
       {/* ── Decorative clouds (desktop only) ── */}
@@ -164,7 +164,7 @@ texttRefs.forEach((ref) => {
       <div className="load h-screen w-screen absolute top-0 left-0 z-50 bg-sky-300" />
 
       {/* ── Header ── */}
-      <div className="h-[15vh] bg-white flex items-center p-[1.3vw] -mt-[3vh] lg:-mt-[1vw] w-full">
+      <div  className="h-[15vh] bg-white flex items-center p-[1.3vw] -mt-[3vh] lg:-mt-[1vw] w-full">
         <img
           className="w-[20vw] md:w-[12vw] lg:w-[6vw] invert"
           src="/images/360logo.png"

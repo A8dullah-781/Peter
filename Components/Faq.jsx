@@ -354,7 +354,7 @@ const Faq = () => {
   return (
     <>
       {/* ── FAQ Section ── */}
-      <div style={{
+      <div id='faqs' style={{
         minHeight: '100vh',
         width: '100%',
         background: '#7DD3FC',
@@ -425,7 +425,7 @@ const Faq = () => {
 
       {/* ── Cloud transition — zero line-height so no gap ── */}
       <div className='bg-[url("/images/cloudfooter.svg")] bg-cover bg-no-repeat h-[90vh] w-screen'>
-        <footer className="  px-[8vw] pt-[30vh] pb-0 font-sans">
+        <footer id='contact' className="  px-[8vw] pt-[30vh] pb-0 font-sans">
 
   {/* ── Center block ── */}
   <div className="flex flex-col items-center text-center pb-14 border-b border-black/[0.07]">
