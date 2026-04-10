@@ -38,8 +38,17 @@ const text5Ref = useRef(null); // Games  - top-[225vh]
 
 
 // ── 2. Pin section ────────────────────────────────────────────
-const isMobile = window.innerWidth < 768;
-const pinEnd = isMobile ? 1400 : 1600;
+const width = window.innerWidth;
+
+let pinEnd;
+
+if (width < 768) {
+  pinEnd = 1200;        // mobile
+} else if (width < 1024) {
+  pinEnd = 300;        // tablet
+} else {
+  pinEnd = 700;       // desktop
+}
 
 const pinTrigger = ScrollTrigger.create({
   trigger: pinRef.current,
@@ -49,13 +58,15 @@ const pinTrigger = ScrollTrigger.create({
   pinSpacing: false,
   onUpdate: (self) => {
     if (self.progress > 0.8) {
-      const p     = (self.progress - 0.8) / 0.2;
+      const p = (self.progress - 0.8) / 0.2;
       const scale = 1 - p;
+
       gsap.to([leftLine.current, rightLine.current], {
         width: `${46.5 * (1 - p)}vw`,
         duration: 0.2,
         overwrite: true,
       });
+
       gsap.to(circleRef.current, {
         scale,
         opacity: scale,
@@ -181,10 +192,11 @@ texttRefs.forEach((ref) => {
 
       {/* ── Scrolling text ── */}
       <div className="flex flex-col px-[7.5vw] sky-text bg-[#7DD3FC] w-full pt-[15vh]">
-        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] mb-[30vh] md:mb-[50vh] text-center tracking-tight">
+        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] md:mb-[8vh] mb-[5vh] lg:mb-[50vh] text-center tracking-tight">
           タブレットやパソコンで外国人の先生<br />とオンライン小学生英会話指導
         </div>
-        <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
+        <div className="lg:hidden block">
+  <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
           週に２回一回目はマンツマン３０分<br />２回目はグループ３０分
         </div>
         <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh]">
@@ -202,17 +214,10 @@ texttRefs.forEach((ref) => {
         <div className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] text-center mt-[3vh] pb-[10vh]">
           小学校一年生から６年生まで
         </div>
+        </div>
       </div>
 
-      {/* ── Path + ball section ────────────────────────────────────
-            KEY FIX:
-            - Container is  position:relative  so SVG can fill it
-            - SVG is  w-full h-full absolute inset-0  — covers the
-              entire section on every screen size
-            - preserveAspectRatio="none" stretches the viewBox to
-              fit exactly, so the path drawn coords always match
-              what the browser renders — ball never drifts off path
-      ──────────────────────────────────────────────────────────── */}
+
       {/* PATH SECTION */}
 <div className="bg-[#7DD3FC] lg:block hidden main relative h-[50vh] md:h-[110vh] lg:h-[280vh] w-screen overflow-hidden">
 
@@ -239,37 +244,37 @@ texttRefs.forEach((ref) => {
   {/* Decorative side images */}
   
   
-  <div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[90vh] text-[2vw] font-semibold  right-[20vw]">
-<div ref={text1Ref} >Boat</div>
+  <div  className=" px-5 py-5 text-[1.4vw]   text-center bg-white rounded-[10vw] flex justify-center items-center absolute top-[100vh] font-normal  right-[20vw]">
+<div ref={text1Ref} >週に２回一回目はマンツマン <br />３０分２回目はグループ３０分</div>
   </div>
-  <img className="absolute w-[25vw] top-[50vh] right-[10vw] invert" src="/images/svgs/boat.png" alt="boat" />
+  <img className="absolute w-[25vw] top-[56vh] -rotate-12 right-[10vw] invert" src="/images/svgs/boat.png" alt="boat" />
 
-<div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[120vh] text-[2vw] font-semibold left-[20vw]">
-  <div ref={text2Ref} >Fire Truck</div>
+<div  className="px-5 py-5  bg-white  rounded-[10vw] rotate-25 flex justify-center items-center absolute top-[140vh] text-[1.5vw] font-semibold left-[5vw]">
+  <div ref={text2Ref} > 大事な絵本を読んだりフォニックスを使ったり</div>
 </div>
 
-  <img className="absolute w-[28vw] top-[90vh] left-[7vw] invert" src="/images/svgs/truck.png" alt="boat" />
+  <img className="absolute w-[28vw] top-[110vh] rotate-25 left-[7vw] invert" src="/images/svgs/truck.png" alt="boat" />
 
-<div  className="h-[20vh] w-[20vw] text-[2vw] font-semibold border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[172vh] -rotate-12  right-[16vw]">
-  <div ref={text3Ref} >Cake</div>
+<div  className="px-5 py-5 text-[1.5vw]   font-normal  bg-white  rounded-[10vw] flex justify-center items-center absolute top-[177vh] -rotate-12  right-[16vw]">
+  <div ref={text3Ref} >歌や韻文を聞いたり
+</div>
 </div>
 
-  <img className="absolute w-[28vw] top-[130vh] right-[10vw] invert" src="/images/svgs/cake.png" alt="boat" />
+  <img className="absolute w-[28vw] top-[135vh] right-[5vw] invert" src="/images/svgs/cake.png" alt="boat" />
 
 
-  <img className="absolute w-[28vw] top-[90vh] left-[7vw] invert" src="/images/svgs/truck.png" alt="boat" />
 
-<div  className="h-[20vh] w-[20vw] text-[2vw] font-semibold border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[202vh]   left-[16vw]">
-  <div ref={text4Ref} >Apple</div>
+<div  className="px-5 py-5 text-[2vw]   font-normal  bg-white  rounded-[10vw] flex justify-center items-center absolute top-[222vh]   left-[8vw]">
+  <div ref={text4Ref} >楽しいパズルと記憶術</div>
 </div>
 
-  <img className="absolute w-[28vw] top-[150vh] left-[10vw] invert" src="/images/svgs/apple.png" alt="boat" />
+  <img className="absolute w-[28vw] top-[170vh] left-[10vw] invert" src="/images/svgs/apple.png" alt="boat" />
 
-<div  className="h-[20vh] w-[20vw] border-sky-500 bg-white border-12 rounded-[10vw] flex justify-center items-center absolute top-[247vh] text-[2vw] font-semibold  right-[20vw]">
-  <div ref={text5Ref} >Clock</div>
+<div  className="px-5 py-5  -rotate-12  bg-white  rounded-[10vw] flex justify-center items-center absolute top-[258vh] text-[2vw] font-normal  right-[10vw]">
+  <div ref={text5Ref} >小学校一年生から６年生まで </div>
 </div>
 
-  <img className="absolute w-[28vw] top-[187vh] right-[13vw] invert" src="/images/svgs/clock.png" alt="boat" />
+  <img className="absolute w-[28vw] top-[200vh] invert right-[13vw] text-white " src="/images/svgs/clock.png" alt="boat" />
 </div>
 
     </div>

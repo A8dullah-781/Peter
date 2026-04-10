@@ -292,11 +292,12 @@ const App = () => {
       .to(wordsRef.current[2], { opacity: 1, y: 0, duration: 0.4 });
 
     tl.add(bounce())
-      .to(finalTextRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-      });
+  .to(finalTextRef.current, {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+  })
+  .to({}, { duration: 1.5 });
 
     return () => {
       lenis.destroy();
