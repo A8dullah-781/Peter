@@ -305,7 +305,7 @@ const Faq = () => {
 
       {/* ══════════════════ CLOUD TRANSITION ══════════════════ */}
       <div
-        className="bg-[url('/images/cloudfooter.svg')] bg-cover bg-no-repeat bg-top"
+        className="bg-[url('/images/cloudfooter.webp')] bg-cover bg-no-repeat bg-top"
         style={{ width: '100%' }}
       >
         {/* ══════════════════ FOOTER ══════════════════ */}
@@ -329,7 +329,7 @@ const Faq = () => {
             transform: footerInView ? 'translateY(0)' : 'translateY(24px)',
             transition: 'opacity 0.7s ease 0.1s, transform 0.7s cubic-bezier(0.23,1,0.32,1) 0.1s',
           }}>
-            <img className="invert w-[40vw] md:w-[15vw]" src="/images/360logo.png" alt="360 English" />
+            <img className="invert w-[40vw] md:w-[15vw]" src="/images/360logo.webp" alt="360 English" />
             <div style={{ fontSize: 'clamp(0.75rem,2vw,1rem)', fontWeight: '700', marginTop: '2rem', letterSpacing: '0.5em', color: '#1e3a5f', textTransform: 'uppercase' }}>
               E N G L I S H
             </div>

@@ -219,7 +219,7 @@ const Details = () => {
             <div className="img-wrapper">
               <div className="img-deco-border" />
               <div className="img-frame">
-                <img src="/images/peter.jpeg" alt="PJ先生のプロフィール写真" />
+                <img src="/images/peter.webp" alt="PJ先生のプロフィール写真" />
                 <div className="pj-badge">PJ先生</div>
               </div>
             </div>
