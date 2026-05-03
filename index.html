@@ -2,11 +2,115 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/images/logo.png" />
+
+    <!-- ═══════════════════════════════════════════════
+         VIEWPORT & THEME
+    ═══════════════════════════════════════════════ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="タブレットやパソコンで外国人の先生とオンライン英会話。小学1年生から6年生対象。週2回のマンツーマン＆グループレッスン。フォニックス・絵本・ゲームで楽しく英語を学ぼう。" />
-    <meta name="robots" content="index, follow" />
-    <title>AbcKid360</title>
+    <meta name="theme-color" content="#7DD3FC" />
+
+    <!-- ═══════════════════════════════════════════════
+         PERFORMANCE: PRECONNECT & DNS-PREFETCH
+    ═══════════════════════════════════════════════ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+    <!-- ═══════════════════════════════════════════════
+         PERFORMANCE: PRELOAD CRITICAL ASSETS (LCP fix)
+    ═══════════════════════════════════════════════ -->
+    <link rel="preload" as="image" href="/images/360logo.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/onlyc.webp"   fetchpriority="high" />
+
+    <!-- ═══════════════════════════════════════════════
+         PERFORMANCE: MODULE PRELOAD
+    ═══════════════════════════════════════════════ -->
+    <link rel="modulepreload" href="/src/main.jsx" />
+
+    <!-- ═══════════════════════════════════════════════
+         FAVICON
+    ═══════════════════════════════════════════════ -->
+    <link rel="icon"             type="image/png" sizes="32x32"  href="/images/logo.png" />
+    <link rel="icon"             type="image/png" sizes="16x16"  href="/images/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180"                 href="/images/logo.png" />
+    <link rel="manifest"         href="/site.webmanifest" />
+
+    <!-- ═══════════════════════════════════════════════
+         PRIMARY SEO
+    ═══════════════════════════════════════════════ -->
+    <title>AbcKid360 | オンライン小学生英会話 - 外国人先生とマンツーマン</title>
+    <meta name="description" content="タブレット・パソコンで外国人の先生とオンライン英会話。小学1〜6年生対象。週2回のマンツーマン＆グループレッスン。フォニックス・絵本・ゲームで楽しく英語を学ぼう。" />
+    <meta name="keywords"     content="オンライン英会話,小学生,英語,フォニックス,外国人講師,マンツーマン,子供英語,AbcKid360" />
+    <meta name="robots"       content="index, follow" />
+    <meta name="author"       content="AbcKid360" />
+    <link rel="canonical"     href="https://abckid360.com/" />
+
+    <!-- ═══════════════════════════════════════════════
+         CONTENT SECURITY POLICY
+    ═══════════════════════════════════════════════ -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src  'self' 'unsafe-inline' 'unsafe-eval';
+                   style-src   'self' 'unsafe-inline' https://fonts.googleapis.com;
+                   font-src    'self' https://fonts.gstatic.com;
+                   img-src     'self' data: https://abckid360.com;
+                   connect-src 'self';
+                   frame-ancestors 'none';" />
+
+    <meta http-equiv="X-Frame-Options"        content="SAMEORIGIN" />
+    <meta http-equiv="X-Content-Type-Options"  content="nosniff" />
+
+    <!-- ═══════════════════════════════════════════════
+         OPEN GRAPH (LINE, Yahoo Japan, Twitter)
+    ═══════════════════════════════════════════════ -->
+    <meta property="og:type"         content="website" />
+    <meta property="og:locale"       content="ja_JP" />
+    <meta property="og:site_name"    content="AbcKid360" />
+    <meta property="og:title"        content="AbcKid360 | オンライン小学生英会話" />
+    <meta property="og:description"  content="外国人の先生と楽しく英語を学ぼう。小学1〜6年生対象のオンライン英会話。週2回マンツーマン＆グループレッスン。" />
+    <meta property="og:url"          content="https://abckid360.com/" />
+    <meta property="og:image"        content="https://abckid360.com/images/og-image.webp" />
+    <meta property="og:image:type"   content="image/webp" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"    content="AbcKid360 オンライン小学生英会話" />
+
+    <!-- ═══════════════════════════════════════════════
+         TWITTER / X CARD
+    ═══════════════════════════════════════════════ -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="AbcKid360 | オンライン小学生英会話" />
+    <meta name="twitter:description" content="外国人の先生と楽しく英語を学ぼう。小学1〜6年生対象のオンライン英会話。" />
+    <meta name="twitter:image"       content="https://abckid360.com/images/og-image.webp" />
+
+    <!-- ═══════════════════════════════════════════════
+         GEO TARGETING (Japan)
+    ═══════════════════════════════════════════════ -->
+    <meta name="geo.region"    content="JP" />
+    <meta name="geo.placename" content="Japan" />
+    <meta name="language"      content="Japanese" />
+
+    <!-- ═══════════════════════════════════════════════
+         STRUCTURED DATA — JSON-LD
+    ═══════════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "AbcKid360",
+      "url": "https://abckid360.com/",
+      "logo": "https://abckid360.com/images/logo.png",
+      "description": "小学1〜6年生を対象としたオンライン英会話スクール。外国人講師によるマンツーマン＆グループレッスン。",
+      "inLanguage": "ja",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Japan"
+      },
+      "teaches": "英語",
+      "educationalLevel": "小学生（1年生〜6年生）"
+    }
+    </script>
+
   </head>
   <body>
     <div id="root"></div>

@@ -1,3 +1,211 @@
+// import { useState, useEffect, useCallback, useRef } from "react"
+
+// // Static — never recreated on render
+// const links = [
+//   { name: "Home",    id: "home"    },
+//   { name: "About",   id: "about"   },
+//   { name: "FAQs",    id: "faqs"    },
+//   { name: "Contact", id: "contact" },
+// ]
+
+// export default function Navbar() {
+//   const [isOpen,    setIsOpen]    = useState(false)
+//   const [isMobile,  setIsMobile]  = useState(false)
+//   const [active,    setActive]    = useState("Home")
+//   const menuRef = useRef(null)
+
+//   // ── Responsive check ─────────────────────────────────────────────
+//   // ResizeObserver is more efficient than window resize — fires only
+//   // when the document root actually changes width, not on every frame.
+//   useEffect(() => {
+//     const check = () => setIsMobile(window.innerWidth < 768)
+//     check()
+//     const ro = new ResizeObserver(check)
+//     ro.observe(document.documentElement)
+//     return () => ro.disconnect()
+//   }, [])
+
+//   // ── Close menu on outside click (desktop) ────────────────────────
+//   useEffect(() => {
+//     if (!isOpen) return
+//     const handler = (e) => {
+//       if (menuRef.current && !menuRef.current.contains(e.target)) {
+//         setIsOpen(false)
+//       }
+//     }
+//     document.addEventListener("mousedown", handler)
+//     return () => document.removeEventListener("mousedown", handler)
+//   }, [isOpen])
+
+//   // ── Close on Escape ──────────────────────────────────────────────
+//   useEffect(() => {
+//     const handler = (e) => { if (e.key === "Escape") setIsOpen(false) }
+//     document.addEventListener("keydown", handler)
+//     return () => document.removeEventListener("keydown", handler)
+//   }, [])
+
+//   // ── Scroll handler — stable reference via useCallback ────────────
+//   const scrollToSection = useCallback((id, name) => {
+//     setActive(name)
+//     setIsOpen(false)
+//     if (id === "home") {
+//       window.scrollTo({ top: 0, behavior: "smooth" })
+//       return
+//     }
+//     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+//   }, [])
+
+//   const handleToggle = useCallback(() => setIsOpen(prev => !prev), [])
+
+//   // ── Shared link renderer ─────────────────────────────────────────
+//   // Using <a href="#id"> instead of onClick-only spans:
+//   //   - crawlers follow anchor hrefs → sections are indexable
+//   //   - works with JS disabled (graceful degradation)
+//   //   - gives correct semantics for screen readers
+//   const NavLink = ({ link, className, activeClassName, baseClassName, onClick: handleClick }) => {
+//     const isActive = active === link.name
+//     return (
+//       <a
+//         href={`#${link.id}`}
+//         aria-current={isActive ? "page" : undefined}
+//         onClick={(e) => { e.preventDefault(); handleClick(link.id, link.name) }}
+//         className={`${baseClassName} ${isActive ? activeClassName : className}`}
+//       >
+//         {link.name}
+//       </a>
+//     )
+//   }
+
+//   // ── Mobile ───────────────────────────────────────────────────────
+//   if (isMobile) {
+//     return (
+//       <div
+//         ref={menuRef}
+//         className="fixed top-4 right-4 z-50 flex flex-col items-end"
+//       >
+//         {/* Toggle button — <button> gives free keyboard support & ARIA */}
+//         <button
+//           onClick={handleToggle}
+//           aria-expanded={isOpen}
+//           aria-controls="mobile-menu"
+//           aria-label={isOpen ? "メニューを閉じる" : "メニューを開く"}
+//           className="flex items-center h-[42px] bg-white border border-[#d1d0ca]/50 rounded-[21px] pr-2 gap-1.5 cursor-pointer"
+//         >
+//           <span className="text-sm pl-4 select-none">Menu</span>
+//           <span
+//             aria-hidden="true"
+//             className="w-7 h-7 rounded-full flex justify-center items-center transition-transform duration-300"
+//             style={{ background: isOpen ? "#dbeafe" : "#f0efe9", transform: isOpen ? "rotate(45deg)" : "rotate(0deg)" }}
+//           >
+//             {isOpen ? "✕" : "≡"}
+//           </span>
+//         </button>
+
+//         {/* Dropdown nav — <nav> + id so aria-controls resolves */}
+//         <nav
+//           id="mobile-menu"
+//           aria-label="モバイルナビゲーション"
+//           hidden={!isOpen}
+//           className="mt-2 bg-white border border-[#d1d0ca]/50 rounded-2xl overflow-hidden flex flex-col"
+//           style={{
+//             maxHeight: isOpen ? "300px" : "0px",
+//             opacity: isOpen ? 1 : 0,
+//             pointerEvents: isOpen ? "auto" : "none",
+//             transition: "max-height 0.3s ease, opacity 0.3s ease",
+//           }}
+//         >
+//           {links.map((link, i) => (
+//             <NavLink
+//               key={link.id}
+//               link={link}
+//               baseClassName="px-5 py-3 text-sm cursor-pointer border-b border-[#f0efe9] last:border-b-0 no-underline"
+//               className="text-slate-800 hover:bg-slate-50"
+//               activeClassName="bg-blue-100 text-blue-700 font-semibold"
+//               onClick={scrollToSection}
+//             />
+//           ))}
+//         </nav>
+//       </div>
+//     )
+//   }
+
+//   // ── Desktop ──────────────────────────────────────────────────────
+//   return (
+//     <div
+//       ref={menuRef}
+//       className="fixed top-0 right-0 z-50 p-6"
+//     >
+//       {/*
+//         role="navigation" + aria-label make this a landmark region.
+//         Screen reader users can jump straight to it via the landmarks menu.
+//       */}
+//       <nav
+//         aria-label="メインナビゲーション"
+//         className="relative flex items-center h-[46px] bg-white border border-[#d1d0ca]/50 rounded-[23px] overflow-hidden"
+//         style={{
+//           width: isOpen ? "380px" : "130px",
+//           transition: "width 0.5s cubic-bezier(0.23,1,0.32,1)",
+//         }}
+//       >
+//         {/* Nav links */}
+//         <ul
+//           role="list"
+//           aria-hidden={!isOpen}
+//           className="absolute left-3.5 top-1/2 -translate-y-1/2 flex items-center m-0 p-0 list-none"
+//           style={{
+//             opacity: isOpen ? 1 : 0,
+//             pointerEvents: isOpen ? "auto" : "none",
+//             transition: "opacity 0.3s ease",
+//           }}
+//         >
+//           {links.map((link, i) => (
+//             <li key={link.id} className="flex items-center">
+//               {i !== 0 && (
+//                 <span aria-hidden="true" className="w-px h-4 bg-[#e5e4de] mx-0 shrink-0" />
+//               )}
+//               <NavLink
+//                 link={link}
+//                 baseClassName="px-3.5 py-1.5 text-[13px] cursor-pointer select-none whitespace-nowrap no-underline rounded-[14px]"
+//                 className="text-slate-800 hover:bg-slate-100"
+//                 activeClassName="bg-blue-100 text-blue-700 font-semibold"
+//                 onClick={(id, name) => { scrollToSection(id, name) }}
+//               />
+//             </li>
+//           ))}
+//         </ul>
+
+//         {/* "Menu" label — decorative, hidden from AT */}
+//         <span
+//           aria-hidden="true"
+//           className="pl-[18px] text-sm select-none whitespace-nowrap pointer-events-none transition-opacity duration-200"
+//           style={{ opacity: isOpen ? 0 : 1 }}
+//         >
+//           Menu
+//         </span>
+
+//         {/* Toggle — <button> for keyboard + AT support */}
+//         <button
+//           onClick={handleToggle}
+//           aria-expanded={isOpen}
+//           aria-controls="desktop-menu"
+//           aria-label={isOpen ? "メニューを閉じる" : "メニューを開く"}
+//           className="ml-auto mr-2.5 w-7 h-7 rounded-full flex justify-center items-center shrink-0 cursor-pointer border-0 transition-[transform,background] duration-300 z-10"
+//           style={{ background: isOpen ? "#dbeafe" : "#f0efe9", transform: isOpen ? "rotate(90deg)" : "rotate(0deg)" }}
+//         >
+//           <span aria-hidden="true">{isOpen ? "✕" : "≡"}</span>
+//         </button>
+//       </nav>
+
+//       {/* Hidden id target so aria-controls resolves on desktop too */}
+//       <span id="desktop-menu" className="sr-only" aria-live="polite">
+//         {isOpen ? "ナビゲーション展開中" : ""}
+//       </span>
+//     </div>
+//   )
+// }
+
+
+
 import { useState, useEffect } from "react";
 
 const links = [

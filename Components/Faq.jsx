@@ -52,6 +52,19 @@ const sections = [
   }
 ]
 
+// SEO: JSON-LD FAQPage schema — built once at module level, never re-computed on render
+const FAQ_SCHEMA_JSON = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": sections.flatMap(s =>
+    s.faqs.map(f => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
+  )
+})
+
 /* ─── Intersection observer ────────────────────────────────────────────────── */
 const useInView = (threshold = 0.12) => {
   const ref = useRef(null)
@@ -78,10 +91,21 @@ const FAQItem = ({ faq, isOpen, onClick, accentColor, idx }) => {
     setHeight(isOpen ? bodyRef.current.scrollHeight : 0)
   }, [isOpen])
 
+  // SEO: keyboard handler so accordion is operable without a mouse
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() }
+  }
+
   return (
+    // SEO: role="button", tabIndex, aria-expanded, onKeyDown — makes accordion
+    // keyboard-accessible and signals open/closed state to screen readers + crawlers
     <div
       ref={ref}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      aria-expanded={isOpen}
       style={{
         cursor: 'pointer',
         borderBottom: '1px solid rgba(0,0,0,0.06)',
@@ -103,22 +127,33 @@ const FAQItem = ({ faq, isOpen, onClick, accentColor, idx }) => {
           <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#0f172a', lineHeight: 1.45, fontFamily: "'Helvetica Neue', sans-serif" }}>{faq.q}</div>
           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '3px', fontFamily: "'Hiragino Kaku Gothic ProN', sans-serif" }}>{faq.jp}</div>
         </div>
-        <div style={{
-          width: '26px', height: '26px', minWidth: '26px', borderRadius: '50%',
-          background: isOpen ? accentColor : 'rgba(255,255,255,0.7)',
-          border: `1.5px solid ${accentColor}`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 0.3s cubic-bezier(0.23,1,0.32,1)',
-          flexShrink: 0,
-          boxShadow: isOpen ? `0 0 12px ${accentColor}44` : 'none',
-        }}>
-          <svg width="11" height="11" viewBox="0 0 12 12" style={{ transition: 'transform 0.35s cubic-bezier(0.23,1,0.32,1)', transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+        {/* SEO: aria-hidden — decorative toggle icon */}
+        <div
+          aria-hidden="true"
+          style={{
+            width: '26px', height: '26px', minWidth: '26px', borderRadius: '50%',
+            background: isOpen ? accentColor : 'rgba(255,255,255,0.7)',
+            border: `1.5px solid ${accentColor}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.3s cubic-bezier(0.23,1,0.32,1)',
+            flexShrink: 0,
+            boxShadow: isOpen ? `0 0 12px ${accentColor}44` : 'none',
+          }}
+        >
+          <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true" focusable="false" style={{ transition: 'transform 0.35s cubic-bezier(0.23,1,0.32,1)', transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}>
             <line x1="6" y1="1" x2="6" y2="11" stroke={isOpen ? 'white' : accentColor} strokeWidth="2" strokeLinecap="round" />
             <line x1="1" y1="6" x2="11" y2="6" stroke={isOpen ? 'white' : accentColor} strokeWidth="2" strokeLinecap="round" />
           </svg>
         </div>
       </div>
-      <div style={{ height: `${height}px`, overflow: 'hidden', transition: 'height 0.42s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+
+      {/* SEO: role="region" + aria-label exposes the answer to screen readers
+          even when the panel is collapsed in the DOM */}
+      <div
+        role="region"
+        aria-label={faq.q}
+        style={{ height: `${height}px`, overflow: 'hidden', transition: 'height 0.42s cubic-bezier(0.4, 0, 0.2, 1)' }}
+      >
         <div ref={bodyRef} style={{ padding: '0 0.25rem 1.2rem' }}>
           <p style={{ margin: '0 0 0.4rem', fontSize: '0.95rem', color: '#1e293b', lineHeight: 1.8 }}>{faq.a}</p>
           <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b', lineHeight: 1.8, fontStyle: 'italic', fontFamily: "'Hiragino Kaku Gothic ProN', sans-serif" }}>{faq.aJp}</p>
@@ -150,7 +185,8 @@ const ContactChip = ({ href, icon, label, sub }) => {
         cursor: 'pointer',
       }}
     >
-      <div style={{
+      {/* SEO: aria-hidden on decorative icon */}
+      <div aria-hidden="true" style={{
         width: '38px', height: '38px', borderRadius: '10px',
         background: hovered ? '#1e3a5f' : 'rgba(30,58,95,0.08)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -198,6 +234,8 @@ const SocialIcon = ({ href, children, label }) => {
     <a
       href={href}
       aria-label={label}
+      rel="noopener noreferrer"
+      target="_blank"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -230,9 +268,18 @@ const Faq = () => {
 
   return (
     <>
+      {/* SEO: FAQPage JSON-LD schema — gives Google rich FAQ result snippets.
+          dangerouslySetInnerHTML prevents React escaping the JSON. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: FAQ_SCHEMA_JSON }}
+      />
+
       {/* ══════════════════ FAQ SECTION ══════════════════ */}
-      <div
+      {/* SEO: div → section with aria-labelledby pointing at the h2 */}
+      <section
         id="faqs"
+        aria-labelledby="faq-heading"
         style={{
           minHeight: '100vh',
           width: '100%',
@@ -244,8 +291,8 @@ const Faq = () => {
           fontFamily: "'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif",
         }}
       >
-        {/* Header */}
-        <div
+        {/* FAQ Header */}
+        <header
           ref={headerRef}
           style={{
             textAlign: 'center', marginBottom: '4rem',
@@ -254,23 +301,31 @@ const Faq = () => {
             transition: 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.23,1,0.32,1)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '1rem' }}>
+          {/* SEO: aria-hidden — decorative rule + label, not a real heading */}
+          <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '1rem' }}>
             <span style={{ display: 'inline-block', width: '32px', height: '2px', background: '#1e3a5f' }} />
             <span style={{ fontSize: '0.7rem', fontWeight: '700', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#1e3a5f' }}>
               Frequently Asked Questions
             </span>
             <span style={{ display: 'inline-block', width: '32px', height: '2px', background: '#1e3a5f' }} />
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: '800', color: '#0f172a', margin: 0, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+          {/* SEO: id="faq-heading" referenced by section's aria-labelledby */}
+          <h2
+            id="faq-heading"
+            style={{ fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: '800', color: '#0f172a', margin: 0, letterSpacing: '-0.03em', lineHeight: 1.1 }}
+          >
             よくある質問
           </h2>
-        </div>
+        </header>
 
         {/* FAQ Sections */}
         <div style={{ width: '100%', maxWidth: '860px', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
           {sections.map((section, sIdx) => (
-            <div key={sIdx}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+            // SEO: div → section per group, labelled by the NO/YES/Details heading
+            <section key={sIdx} aria-label={`${section.label} — ${section.labelJp}`}>
+
+              {/* SEO: aria-hidden — decorative label row, not a meaningful heading */}
+              <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
                 <div style={{ color: section.color, fontSize: '0.9rem', fontWeight: '700', letterSpacing: '0.22em', textTransform: 'uppercase', flexShrink: 0 }}>
                   {section.label}
                 </div>
@@ -279,6 +334,7 @@ const Faq = () => {
                   {section.labelJp}
                 </span>
               </div>
+
               <div style={{
                 background: 'rgba(255,255,255,0.28)',
                 backdropFilter: 'blur(10px)',
@@ -298,20 +354,26 @@ const Faq = () => {
                   />
                 ))}
               </div>
-            </div>
+            </section>
           ))}
         </div>
-      </div>
+      </section>
 
       {/* ══════════════════ CLOUD TRANSITION ══════════════════ */}
+      {/* SEO: aria-hidden — purely decorative background image wrapper */}
       <div
         className="bg-[url('/images/cloudfooter.webp')] bg-cover bg-no-repeat bg-top"
         style={{ width: '100%' }}
+        aria-hidden="false"
       >
         {/* ══════════════════ FOOTER ══════════════════ */}
+        {/* SEO: aria-label + itemScope/itemType for Organization schema */}
         <footer
           id="contact"
           ref={footerRef}
+          aria-label="お問い合わせ・フッター"
+          itemScope
+          itemType="https://schema.org/Organization"
           style={{
             paddingTop: '28vh',
             paddingBottom: '0',
@@ -320,6 +382,12 @@ const Faq = () => {
             fontFamily: "'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif",
           }}
         >
+          {/* SEO: machine-readable Organization metadata */}
+          <meta itemProp="name"       content="AbcKid360" />
+          <meta itemProp="url"        content="https://abckid360.com/" />
+          <meta itemProp="logo"       content="https://abckid360.com/images/360logo.webp" />
+          <meta itemProp="areaServed" content="Japan" />
+          <link itemProp="sameAs"     href="https://abckid360.com/" />
 
           {/* ── Logo & Tagline ── */}
           <div style={{
@@ -329,19 +397,34 @@ const Faq = () => {
             transform: footerInView ? 'translateY(0)' : 'translateY(24px)',
             transition: 'opacity 0.7s ease 0.1s, transform 0.7s cubic-bezier(0.23,1,0.32,1) 0.1s',
           }}>
-            <img className="invert w-[40vw] md:w-[15vw]" src="/images/360logo.webp" alt="360 English" />
-            <div style={{ fontSize: 'clamp(0.75rem,2vw,1rem)', fontWeight: '700', marginTop: '2rem', letterSpacing: '0.5em', color: '#1e3a5f', textTransform: 'uppercase' }}>
+            {/* SEO: logo link with descriptive aria-label */}
+            <a href="/" aria-label="AbcKid360 ホームへ戻る">
+              <img
+                className="invert w-[40vw] md:w-[15vw]"
+                src="/images/360logo.webp"
+                alt="AbcKid360 オンライン小学生英会話"
+                width={240}
+                height={80}
+                loading="lazy"
+                decoding="async"
+                itemProp="logo"
+              />
+            </a>
+            {/* SEO: aria-hidden — decorative typographic spacing element */}
+            <div aria-hidden="true" style={{ fontSize: 'clamp(0.75rem,2vw,1rem)', fontWeight: '700', marginTop: '2rem', letterSpacing: '0.5em', color: '#1e3a5f', textTransform: 'uppercase' }}>
               E N G L I S H
             </div>
           </div>
 
           {/* ── Contact Cards Grid ── */}
-          <div style={{
+          {/* SEO: div → address — semantic wrapper for contact information */}
+          <address style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: '12px',
             maxWidth: '900px',
             margin: '0 auto 3rem',
+            fontStyle: 'normal',
             opacity: footerInView ? 1 : 0,
             transform: footerInView ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.65s ease 0.25s, transform 0.65s cubic-bezier(0.23,1,0.32,1) 0.25s',
@@ -351,7 +434,7 @@ const Faq = () => {
               label="Primary Email"
               sub="pj@abckid360.com"
               icon={
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                   <rect x="2" y="4" width="20" height="16" rx="3"/>
                   <polyline points="2,4 12,13 22,4"/>
                 </svg>
@@ -362,7 +445,7 @@ const Faq = () => {
               label="General Email"
               sub="abckid360@gmail.com"
               icon={
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                   <rect x="2" y="4" width="20" height="16" rx="3"/>
                   <polyline points="2,4 12,13 22,4"/>
                 </svg>
@@ -373,24 +456,21 @@ const Faq = () => {
               label="Physical Address"
               sub="〒001-0045 北海道札幌市北区麻生町3-2-4-206 GTS内"
               icon={
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                   <circle cx="12" cy="10" r="3"/>
                 </svg>
               }
             />
-          </div>
+          </address>
 
-          {/* ── Divider ── */}
-          <div style={{
+          {/* SEO: aria-hidden on decorative divider */}
+          <div aria-hidden="true" style={{
             maxWidth: '900px', margin: '0 auto',
             height: '1px', background: 'rgba(0,0,0,0.07)',
             opacity: footerInView ? 1 : 0,
             transition: 'opacity 0.5s ease 0.4s',
           }} />
-
-          {/* ── Nav + Socials ── */}
-         
 
           {/* ── Bottom bar ── */}
           <div style={{
@@ -401,10 +481,10 @@ const Faq = () => {
             opacity: footerInView ? 1 : 0,
             transition: 'opacity 0.5s ease 0.6s',
           }}>
-            <div style={{ fontSize: '0.72rem', letterSpacing: '0.04em' }}>
-              © 2025 · 360 English · PJ Sensei · All rights reserved.
-            </div>
-           
+            {/* SEO: div → small with semantic copyright span */}
+            <small style={{ fontSize: '0.72rem', letterSpacing: '0.04em' }}>
+              <span aria-label="copyright">©</span> 2025 · 360 English · PJ Sensei · All rights reserved.
+            </small>
           </div>
 
         </footer>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
@@ -143,6 +144,30 @@ const Home = () => {
   return (
     <div id="home" className="sky-bg overflow-x-hidden w-screen">
 
+      {/* ── SEO Head ── */}
+      <Helmet>
+        <title>AbcKid360 | オンライン小学生英会話 – 外国人講師によるマンツーマン・グループレッスン</title>
+        <meta name="description" content="タブレット・パソコンで外国人の先生とオンライン英会話。週2回、マンツーマン30分＋グループ30分。小学1〜6年生対象。フォニックス・絵本・歌で楽しく学べる。" />
+        <meta property="og:title" content="AbcKid360 | オンライン小学生英会話" />
+        <meta property="og:description" content="外国人講師によるオンライン英会話。週2回レッスン、小学1〜6年生対象。" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EducationalOrganization",
+          "name": "AbcKid360",
+          "description": "外国人講師によるオンライン小学生英会話スクール。週2回、マンツーマン＋グループレッスン。",
+          "url": "https://yourdomain.com",
+          "inLanguage": "ja",
+          "audience": {
+            "@type": "EducationalAudience",
+            "educationalRole": "student",
+            "suggestedMinAge": 6,
+            "suggestedMaxAge": 12
+          }
+        })}</script>
+      </Helmet>
+
       {/* ── Decorative clouds (desktop only) ── */}
       <div className="lg:block hidden">
         <img className="absolute w-[30vw] top-15 z-50 left-12"    src="/images/onlyc.webp"  alt="" width="480" height="320" aria-hidden="true" />
@@ -151,7 +176,7 @@ const Home = () => {
       </div>
 
       {/* ── Loading screen overlay ── */}
-      <div className="load h-screen w-screen absolute top-0 left-0 z-50 bg-sky-300" />
+      <div className="load h-screen w-screen absolute top-0 left-0 z-50 bg-sky-300" aria-hidden="true" />
 
       {/* ── Header ── */}
       <header className="h-[15vh] bg-white flex items-center p-[1.3vw] -mt-[3vh] lg:-mt-[1vw] w-full">
@@ -186,7 +211,10 @@ const Home = () => {
 
         {/* ── Scrolling text ── */}
         <div className="flex flex-col px-[7.5vw] sky-text bg-[#7DD3FC] w-full pt-[15vh]">
-          <h1 className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] md:mb-[8vh] mb-[5vh] lg:mb-[50vh] text-center tracking-tight">
+          <h1
+            className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] md:mb-[8vh] mb-[5vh] lg:mb-[50vh] text-center tracking-tight"
+            aria-label="オンライン小学生英会話 外国人講師 マンツーマン グループレッスン タブレット パソコン対応"
+          >
             タブレットやパソコンで外国人の先生<br />とオンライン小学生英会話指導
           </h1>
           <div className="lg:hidden block">

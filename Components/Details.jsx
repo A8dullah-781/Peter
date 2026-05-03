@@ -97,9 +97,11 @@ const Details = () => {
   }, [])
 
   return (
-    <div
+    // SEO: div → section with aria-labelledby pointing at the h2
+    <section
       id="about"
       ref={sectionRef}
+      aria-labelledby="about-heading"
       style={{
         width: '100%',
         background: '#fff',
@@ -125,16 +127,13 @@ const Details = () => {
           .img-sticky { position: static !important; }
         }
 
-        /* Decorative border sits BEHIND the image card */
         .img-wrapper {
           position: relative;
-          /* extra room so the deco border is not clipped */
           padding-bottom: 20px;
           padding-right: 20px;
         }
         .img-deco-border {
           position: absolute;
-          /* match the frame exactly, then offset it */
           top: 0;
           left: 0;
           right: 20px;
@@ -216,40 +215,56 @@ const Details = () => {
           {/* Left: Image + stats */}
           <div ref={imgColRef} className="img-sticky" style={{ position: 'sticky', top: '6rem' }}>
 
-            <div className="img-wrapper">
-              <div className="img-deco-border" />
+            <figure className="img-wrapper" style={{ margin: 0 }}>
+              {/* SEO: aria-hidden on purely decorative border */}
+              <div className="img-deco-border" aria-hidden="true" />
               <div className="img-frame">
-                <img src="/images/peter.webp" alt="PJ先生のプロフィール写真" />
-                <div className="pj-badge">PJ先生</div>
+                {/* SEO: descriptive alt, eager loading, fetchPriority, explicit dimensions */}
+                <img
+                  src="/images/peter.webp"
+                  alt="PJ先生 — カナダ出身、20年以上の指導経験を持つオンライン英会話教師"
+                  width={480}
+                  height={600}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+                {/* SEO: aria-hidden — badge is decorative, alt text already names the teacher */}
+                <div className="pj-badge" aria-hidden="true">PJ先生</div>
               </div>
-            </div>
+            </figure>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '2.5rem' }}>
+            {/* SEO: div grid → dl with dt/dd pairs for semantic stat markup */}
+            <dl style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '2.5rem' }}>
               {stats.map((s, i) => (
                 <div key={i} ref={el => statsRef.current[i] = el} className="stat-chip">
-                  <div style={{ fontSize: '1.7rem', fontWeight: '800', color: '#1e3a5f', lineHeight: 1, marginBottom: '4px', letterSpacing: '-0.02em' }}>
+                  <dd style={{ fontSize: '1.7rem', fontWeight: '800', color: '#1e3a5f', lineHeight: 1, marginBottom: '4px', letterSpacing: '-0.02em', margin: 0 }}>
                     {s.num}
-                  </div>
-                  <div style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: '500' }}>{s.label}</div>
+                  </dd>
+                  <dt style={{ fontSize: '0.76rem', color: '#64748b', fontWeight: '500' }}>{s.label}</dt>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
 
           {/* Right: Bio text */}
           <div>
-            <p style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#7DD3FC', margin: '0 0 1rem' }}>
+            {/* SEO: aria-hidden — "About" is a decorative label, not meaningful heading content */}
+            <p aria-hidden="true" style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#7DD3FC', margin: '0 0 1rem' }}>
               About
             </p>
 
+            {/* SEO: id="about-heading" referenced by the section's aria-labelledby */}
             <h2
+              id="about-heading"
               ref={aboutHeadRef}
               style={{ fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: '700', color: '#1e3a5f', lineHeight: 1.1, letterSpacing: '-0.04em', margin: '0 0 1.6rem' }}
             >
               PJ先生について
             </h2>
 
-            <div ref={aboutLineRef} style={{ width: '48px', height: '3px', background: '#7DD3FC', borderRadius: '2px', marginBottom: '2.5rem' }} />
+            {/* SEO: aria-hidden on decorative line */}
+            <div ref={aboutLineRef} aria-hidden="true" style={{ width: '48px', height: '3px', background: '#7DD3FC', borderRadius: '2px', marginBottom: '2.5rem' }} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
               {[
@@ -277,8 +292,9 @@ const Details = () => {
               alignItems: 'center',
               gap: '1rem',
             }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7DD3FC" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              {/* SEO: aria-hidden on decorative icon */}
+              <div aria-hidden="true" style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#1e3a5f', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7DD3FC" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                   <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
                 </svg>
               </div>
@@ -291,7 +307,8 @@ const Details = () => {
         </div>
 
         {/* ── DIVIDER ── */}
-        <div ref={dividerRef} style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', margin: '7rem 0' }}>
+        {/* SEO: aria-hidden — purely decorative */}
+        <div ref={dividerRef} aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', margin: '7rem 0' }}>
           <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, #BAE6FD, transparent)' }} />
           <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7DD3FC' }} />
           <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#1e3a5f' }} />
@@ -300,19 +317,25 @@ const Details = () => {
         </div>
 
         {/* ── SERVICES ── */}
-        <div>
-          <p ref={serviceLabelRef} style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#7DD3FC', margin: '0 0 1rem' }}>
+        {/* SEO: div → section with aria-labelledby */}
+        <section aria-labelledby="services-heading">
+
+          {/* SEO: aria-hidden — decorative label */}
+          <p ref={serviceLabelRef} aria-hidden="true" style={{ fontSize: '0.72rem', fontWeight: '700', letterSpacing: '0.16em', textTransform: 'uppercase', color: '#7DD3FC', margin: '0 0 1rem' }}>
             Services
           </p>
 
+          {/* SEO: id="services-heading" referenced by the section's aria-labelledby */}
           <h2
+            id="services-heading"
             ref={serviceHeadRef}
             style={{ fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', fontWeight: '800', color: '#1e3a5f', lineHeight: 1.1, letterSpacing: '-0.04em', margin: '0 0 1.6rem' }}
           >
             個別対応型<br />オンライン英語指導
           </h2>
 
-          <div ref={serviceLineRef} style={{ width: '48px', height: '3px', background: '#7DD3FC', borderRadius: '2px', marginBottom: '2.5rem' }} />
+          {/* SEO: aria-hidden on decorative line */}
+          <div ref={serviceLineRef} aria-hidden="true" style={{ width: '48px', height: '3px', background: '#7DD3FC', borderRadius: '2px', marginBottom: '2.5rem' }} />
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.2rem 3rem', marginBottom: '3.5rem' }}>
             {[
@@ -332,28 +355,33 @@ const Details = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.4rem' }}>
-            <p style={{ fontSize: '0.74rem', fontWeight: '700', letterSpacing: '0.14em', color: '#1e3a5f', margin: 0, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+            {/* SEO: p → h3 for correct heading hierarchy (h2 → h3) */}
+            <h3 style={{ fontSize: '0.74rem', fontWeight: '700', letterSpacing: '0.14em', color: '#1e3a5f', margin: 0, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
               Cognitive Learning Types
-            </p>
-            <div style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
+            </h3>
+            <div aria-hidden="true" style={{ flex: 1, height: '1px', background: '#E2E8F0' }} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
+          {/* SEO: div grid → ul/li for semantic list markup */}
+          <ul
+            aria-label="認知学習タイプ一覧"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', listStyle: 'none', padding: 0, margin: 0 }}
+          >
             {cogTypes.map((t, i) => (
-              <div key={i} ref={el => cogRef.current[i] = el} className="cog-card">
+              <li key={i} ref={el => cogRef.current[i] = el} className="cog-card">
                 <div style={{ fontSize: '0.68rem', fontWeight: '700', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#1e3a5f', marginBottom: '8px' }}>
                   {t.en}
                 </div>
                 <div style={{ fontSize: '0.96rem', color: '#1e293b', lineHeight: 1.65, fontWeight: '500' }}>
                   {t.jp}
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
 
+        </section>
       </div>
-    </div>
+    </section>
   )
 }
 
