@@ -1,0 +1,8 @@
+{
+  "name": "AbcKid360",
+  "short_name": "AbcKid360",
+  "icons": [{ "src": "/images/logo.png", "sizes": "192x192", "type": "image/png" }],
+  "theme_color": "#7DD3FC",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

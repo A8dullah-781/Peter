@@ -22,10 +22,7 @@
     <link rel="preload" as="image" href="/images/360logo.webp" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/onlyc.webp"   fetchpriority="high" />
 
-    <!-- ═══════════════════════════════════════════════
-         PERFORMANCE: MODULE PRELOAD
-    ═══════════════════════════════════════════════ -->
-    <link rel="modulepreload" href="/src/main.jsx" />
+   
 
     <!-- ═══════════════════════════════════════════════
          FAVICON
@@ -37,10 +34,11 @@
 
     <!-- ═══════════════════════════════════════════════
          PRIMARY SEO
+         Keywords: 英会話 > 小学生 > オンライン > 学習 > 発達障害
     ═══════════════════════════════════════════════ -->
-    <title>AbcKid360 | オンライン小学生英会話 - 外国人先生とマンツーマン</title>
-    <meta name="description" content="タブレット・パソコンで外国人の先生とオンライン英会話。小学1〜6年生対象。週2回のマンツーマン＆グループレッスン。フォニックス・絵本・ゲームで楽しく英語を学ぼう。" />
-    <meta name="keywords"     content="オンライン英会話,小学生,英語,フォニックス,外国人講師,マンツーマン,子供英語,AbcKid360" />
+    <title>AbcKid360 | 小学生オンライン英会話 - 発達障害・学習サポート対応・外国人先生とマンツーマン</title>
+    <meta name="description" content="小学生向けオンライン英会話スクール。発達障害・学習障害のお子様も安心して学べる環境。外国人講師とマンツーマンで英会話・フォニックスを楽しく学習。1〜6年生対象、週2回レッスン。" />
+    <meta name="keywords"     content="英会話,小学生,オンライン英会話,学習,発達障害,英語学習,フォニックス,外国人講師,マンツーマン,子供英語,オンライン学習,英会話スクール,小学生英語,発達障害 英語,AbcKid360,学習サポート,英語教育,グループレッスン" />
     <meta name="robots"       content="index, follow" />
     <meta name="author"       content="AbcKid360" />
     <link rel="canonical"     href="https://abckid360.com/" />
@@ -50,11 +48,11 @@
     ═══════════════════════════════════════════════ -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
-                   script-src  'self' 'unsafe-inline' 'unsafe-eval';
+                   script-src  'self' 'unsafe-inline' 'unsafe-eval' https://ipapi.co;
                    style-src   'self' 'unsafe-inline' https://fonts.googleapis.com;
                    font-src    'self' https://fonts.gstatic.com;
                    img-src     'self' data: https://abckid360.com;
-                   connect-src 'self';
+                   connect-src 'self' https://ipapi.co;
                    frame-ancestors 'none';" />
 
     <meta http-equiv="X-Frame-Options"        content="SAMEORIGIN" />
@@ -66,21 +64,21 @@
     <meta property="og:type"         content="website" />
     <meta property="og:locale"       content="ja_JP" />
     <meta property="og:site_name"    content="AbcKid360" />
-    <meta property="og:title"        content="AbcKid360 | オンライン小学生英会話" />
-    <meta property="og:description"  content="外国人の先生と楽しく英語を学ぼう。小学1〜6年生対象のオンライン英会話。週2回マンツーマン＆グループレッスン。" />
+    <meta property="og:title"        content="AbcKid360 | 小学生オンライン英会話 - 発達障害サポート対応" />
+    <meta property="og:description"  content="発達障害・学習障害のお子様も安心。外国人講師と楽しくオンライン英会話。小学1〜6年生対象、週2回マンツーマン＆グループレッスン。" />
     <meta property="og:url"          content="https://abckid360.com/" />
     <meta property="og:image"        content="https://abckid360.com/images/og-image.webp" />
     <meta property="og:image:type"   content="image/webp" />
     <meta property="og:image:width"  content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt"    content="AbcKid360 オンライン小学生英会話" />
+    <meta property="og:image:alt"    content="AbcKid360 小学生オンライン英会話" />
 
     <!-- ═══════════════════════════════════════════════
          TWITTER / X CARD
     ═══════════════════════════════════════════════ -->
     <meta name="twitter:card"        content="summary_large_image" />
-    <meta name="twitter:title"       content="AbcKid360 | オンライン小学生英会話" />
-    <meta name="twitter:description" content="外国人の先生と楽しく英語を学ぼう。小学1〜6年生対象のオンライン英会話。" />
+    <meta name="twitter:title"       content="AbcKid360 | 小学生オンライン英会話 - 発達障害サポート対応" />
+    <meta name="twitter:description" content="発達障害のお子様も安心。外国人講師と楽しくオンライン英会話。小学1〜6年生対象。" />
     <meta name="twitter:image"       content="https://abckid360.com/images/og-image.webp" />
 
     <!-- ═══════════════════════════════════════════════
@@ -100,16 +98,56 @@
       "name": "AbcKid360",
       "url": "https://abckid360.com/",
       "logo": "https://abckid360.com/images/logo.png",
-      "description": "小学1〜6年生を対象としたオンライン英会話スクール。外国人講師によるマンツーマン＆グループレッスン。",
+      "description": "小学1〜6年生を対象としたオンライン英会話スクール。発達障害・学習障害のお子様も安心して学べる環境。外国人講師によるマンツーマン＆グループレッスン。",
       "inLanguage": "ja",
       "areaServed": {
         "@type": "Country",
         "name": "Japan"
       },
-      "teaches": "英語",
-      "educationalLevel": "小学生（1年生〜6年生）"
+      "teaches": "英語・英会話・フォニックス",
+      "educationalLevel": "小学生（1年生〜6年生）",
+      "keywords": "英会話, 小学生, オンライン, 学習, 発達障害, フォニックス, 外国人講師"
     }
     </script>
+
+    <!-- ═══════════════════════════════════════════════
+         JAPAN-ONLY ACCESS BLOCK
+    ═══════════════════════════════════════════════ -->
+    <script>
+  (function () {
+    function showBlockScreen() {
+      document.documentElement.style.margin = '0';
+      document.documentElement.style.padding = '0';
+      document.documentElement.style.height = '100%';
+      document.body = document.createElement('body');
+      document.body.style.cssText =
+        'margin:0;padding:0;height:100vh;display:flex;align-items:center;' +
+        'justify-content:center;background:#f0f4f8;font-family:sans-serif;text-align:center;';
+      document.body.innerHTML =
+        '<div style="padding:40px;">' +
+        '<div style="font-size:64px;margin-bottom:20px;">🇯🇵</div>' +
+        '<h1 style="color:#1a1a2e;font-size:24px;margin-bottom:12px;">アクセス制限</h1>' +
+        '<p style="color:#555;font-size:16px;max-width:400px;line-height:1.6;">' +
+        'このサイトは日本国内からのみアクセス可能です。<br>' +
+        '<span style="font-size:13px;color:#888;">This site is only accessible from Japan.</span>' +
+        '</p>' +
+        '</div>';
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+      fetch('https://ipapi.co/json/')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.country_code !== 'JP') {
+            showBlockScreen();
+          }
+        })
+        .catch(function () {
+          // If the API fails, allow access (fail open)
+        });
+    });
+  })();
+</script>
 
   </head>
   <body>

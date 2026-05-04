@@ -316,6 +316,10 @@ const Faq = () => {
           >
             よくある質問
           </h2>
+          {/* SEO: descriptive subtitle with target keywords */}
+          <p style={{ fontSize: '0.95rem', color: '#1e3a5f', marginTop: '0.75rem', lineHeight: 1.7, fontFamily: "'Hiragino Kaku Gothic ProN', sans-serif" }}>
+            小学生オンライン英会話・英語学習・発達障害サポートについてのご質問
+          </p>
         </header>
 
         {/* FAQ Sections */}
@@ -414,6 +418,10 @@ const Faq = () => {
             <div aria-hidden="true" style={{ fontSize: 'clamp(0.75rem,2vw,1rem)', fontWeight: '700', marginTop: '2rem', letterSpacing: '0.5em', color: '#1e3a5f', textTransform: 'uppercase' }}>
               E N G L I S H
             </div>
+            {/* SEO: visible tagline with target keywords for Google indexing */}
+            <p style={{ fontSize: '0.8rem', color: '#1e3a5f', marginTop: '0.6rem', letterSpacing: '0.05em', fontFamily: "'Hiragino Kaku Gothic ProN', sans-serif" }}>
+              小学生・発達障害対応オンライン英会話・英語学習スクール
+            </p>
           </div>
 
           {/* ── Contact Cards Grid ── */}

@@ -1,6 +1,3 @@
-
-
 User-agent: *
 Allow: /
-
 Sitemap: https://abckid360.com/sitemap.xml

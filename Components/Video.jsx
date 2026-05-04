@@ -159,7 +159,7 @@ const Video = () => {
           loop
           muted
           playsInline
-          preload="none"
+          preload="auto"
           aria-label="AbcKid360のサービス紹介動画"
         />
 
