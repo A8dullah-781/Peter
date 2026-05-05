@@ -38,8 +38,8 @@ const Video = () => {
   const videoRef     = useRef(null)
   const containerRef = useRef(null)
   const progressRef  = useRef(null)
-  const rafRef       = useRef(null)      // requestAnimationFrame id
-  const ctxRef       = useRef(null)      // GSAP context for cleanup
+  const rafRef       = useRef(null)
+  const ctxRef       = useRef(null)
 
   const [playing,  setPlaying]  = useState(false)
   const [muted,    setMuted]    = useState(true)
@@ -48,10 +48,6 @@ const Video = () => {
   useEffect(() => {
     const video = videoRef.current
 
-    // ── rAF-based progress ticker ──────────────────────────────────
-    // timeupdate fires only ~4× per second — too choppy for a progress bar.
-    // requestAnimationFrame syncs to display refresh (60fps) giving smooth
-    // progress movement with ZERO extra DOM events.
     const tick = () => {
       if (!video.paused && video.duration) {
         setProgress((video.currentTime / video.duration) * 100)
@@ -60,7 +56,6 @@ const Video = () => {
     }
     rafRef.current = requestAnimationFrame(tick)
 
-    // ── GSAP scroll-triggered entrance + autoplay ──────────────────
     ctxRef.current = gsap.context(() => {
       gsap.fromTo(
         containerRef.current,
@@ -74,8 +69,6 @@ const Video = () => {
             trigger: containerRef.current,
             start: "top 80%",
             onEnter: () => {
-              // Play as soon as the browser has enough data; if already ready,
-              // play() returns a Promise — catch AbortError on unmount.
               video.play().then(() => setPlaying(true)).catch(() => {})
             },
           },
@@ -85,11 +78,10 @@ const Video = () => {
 
     return () => {
       cancelAnimationFrame(rafRef.current)
-      ctxRef.current?.revert()           // kills ScrollTrigger + tween
+      ctxRef.current?.revert()
     }
   }, [])
 
-  // ── Stable handlers (no anonymous functions in JSX) ───────────────
   const toggle = useCallback(() => {
     const video = videoRef.current
     if (video.paused) {
@@ -105,7 +97,6 @@ const Video = () => {
     setMuted(v => !v)
   }, [])
 
-  // skip: single factory avoids creating two inline arrows on every render
   const skip = useCallback((sec) => {
     videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime + sec)
   }, [])
@@ -113,7 +104,6 @@ const Video = () => {
   const skipBack    = useCallback(() => skip(-10), [skip])
   const skipForward = useCallback(() => skip(10),  [skip])
 
-  // ── Progress bar — click + keyboard seek ──────────────────────────
   const seek = useCallback((e) => {
     const rect = progressRef.current.getBoundingClientRect()
     const pct  = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width))
@@ -126,31 +116,14 @@ const Video = () => {
   }, [skip])
 
   return (
-    /*
-      <section> gives a landmark region — Lighthouse Accessibility audit
-      rewards this; crawlers also understand video content in context.
-    */
     <section
       aria-label="紹介動画"
-      className="w-full flex justify-center items-center py-[10vh]"
+      className="w-full flex justify-center items-center pb-[4vh] lg:py-[10vh]"
     >
       <div
         ref={containerRef}
-        // opacity-0 matches GSAP fromTo start — prevents FOUC
         className="relative z-10 w-[80vw] overflow-hidden rounded-2xl opacity-0"
       >
-        {/*
-          <video> semantic attributes for SEO + performance:
-          - title         → machine-readable label for the video element
-          - preload="none"→ stops downloading video bytes during page load,
-                            which was the #1 TBT / bandwidth killer.
-                            GSAP onEnter triggers play() which triggers load.
-          - playsInline   → required for iOS autoplay
-          - muted         → required for autoplay in all browsers
-          - loop          → background loop behavior unchanged
-          No poster= set here as we don't have one, but adding one would
-          further improve LCP if a frame image is available.
-        */}
         <video
           ref={videoRef}
           src="/images/video.mp4"
@@ -165,15 +138,10 @@ const Video = () => {
 
         {/* Controls overlay */}
         <div
-          className="absolute bottom-0 left-0 right-0 px-6 pb-5 pt-10 bg-gradient-to-t from-black/60 to-transparent"
-          // Prevent overlay clicks from bubbling to section
+          className="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-6 md:px-6 md:pb-5 md:pt-10 bg-gradient-to-t from-black/60 to-transparent"
           onClick={(e) => e.stopPropagation()}
         >
           {/* ── Progress bar ── */}
-          {/*
-            role="slider" + aria attributes make the scrubber usable with
-            keyboard and announced correctly by screen readers.
-          */}
           <div
             ref={progressRef}
             role="slider"
@@ -185,7 +153,7 @@ const Video = () => {
             tabIndex={0}
             onClick={seek}
             onKeyDown={seekKey}
-            className="w-full h-[3px] bg-white/30 rounded-full mb-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="w-full h-[2px] md:h-[3px] bg-white/30 rounded-full mb-2 md:mb-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
             <div
               aria-hidden="true"
@@ -195,13 +163,13 @@ const Video = () => {
           </div>
 
           {/* ── Playback controls ── */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
 
             {/* Skip back */}
             <button
               onClick={skipBack}
               aria-label="10秒戻る"
-              className="text-white text-sm font-medium hover:opacity-60 transition-opacity"
+              className="text-white text-[10px] md:text-sm font-medium hover:opacity-60 transition-opacity"
             >
               −10s
             </button>
@@ -210,7 +178,7 @@ const Video = () => {
             <button
               onClick={toggle}
               aria-label={playing ? "一時停止" : "再生"}
-              className="flex items-center gap-2 bg-white text-black text-sm font-medium px-5 py-2 rounded-full hover:scale-105 transition-transform"
+              className="flex items-center gap-1.5 md:gap-2 bg-white text-black text-[10px] md:text-sm font-medium px-3 py-1.5 md:px-5 md:py-2 rounded-full hover:scale-105 transition-transform"
             >
               {playing ? <IconPause /> : <IconPlay />}
               <span>{playing ? "Pause" : "Play"}</span>
@@ -220,7 +188,7 @@ const Video = () => {
             <button
               onClick={skipForward}
               aria-label="10秒進む"
-              className="text-white text-sm font-medium hover:opacity-60 transition-opacity"
+              className="text-white text-[10px] md:text-sm font-medium hover:opacity-60 transition-opacity"
             >
               +10s
             </button>
@@ -230,9 +198,12 @@ const Video = () => {
               onClick={toggleMute}
               aria-label={muted ? "ミュート解除" : "ミュート"}
               aria-pressed={muted}
-              className="ml-auto text-white hover:opacity-60 transition-opacity flex items-center gap-1.5"
+              className="ml-auto text-white hover:opacity-60 transition-opacity flex items-center gap-1"
             >
-              {muted ? <IconMuted /> : <IconSound />}
+              {/* Scale down icon on mobile */}
+              <span className="scale-75 md:scale-100 inline-flex">
+                {muted ? <IconMuted /> : <IconSound />}
+              </span>
               <span className="text-sm font-medium sr-only">
                 {muted ? "Mute" : "Sound"}
               </span>
