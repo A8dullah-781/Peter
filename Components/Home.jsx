@@ -7,19 +7,18 @@ import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 const Home = () => {
-  // ── Refs ──────────────────────────────────────────────────────────
-  const pinRef = useRef(null);
-  const leftLine = useRef(null);
+  const pinRef    = useRef(null);
+  const leftLine  = useRef(null);
   const rightLine = useRef(null);
   const circleRef = useRef(null);
-  const ballRef = useRef(null);
-  const pathRef = useRef(null);
-  const svgRef = useRef(null);
-  const text1Ref = useRef(null);
-  const text2Ref = useRef(null);
-  const text3Ref = useRef(null);
-  const text4Ref = useRef(null);
-  const text5Ref = useRef(null);
+  const ballRef   = useRef(null);
+  const pathRef   = useRef(null);
+  const svgRef    = useRef(null);
+  const text1Ref  = useRef(null);
+  const text2Ref  = useRef(null);
+  const text3Ref  = useRef(null);
+  const text4Ref  = useRef(null);
+  const text5Ref  = useRef(null);
   const width = window.innerWidth;
 
   useEffect(() => {
@@ -37,13 +36,9 @@ const Home = () => {
     const width = window.innerWidth;
 
     let pinEnd;
-    if (width < 768) {
-      pinEnd = 380;
-    } else if (width < 1024) {
-      pinEnd = 300;
-    } else {
-      pinEnd = 700;
-    }
+    if (width < 768)       pinEnd = 380;
+    else if (width < 1024) pinEnd = 300;
+    else                   pinEnd = 700;
 
     const pinTrigger = ScrollTrigger.create({
       trigger: pinRef.current,
@@ -54,13 +49,11 @@ const Home = () => {
       onUpdate: (self) => {
         if (self.progress > 0.8) {
           const p = (self.progress - 0.8) / 0.2;
-
           gsap.to([leftLine.current, rightLine.current], {
             width: `${46.5 * (1 - p)}vw`,
             duration: 0.2,
             overwrite: true,
           });
-
           gsap.to(circleRef.current, {
             scale: 1 - p,
             opacity: 1 - p,
@@ -74,14 +67,7 @@ const Home = () => {
       },
     });
 
-    // ── 3. Text cards: hidden by default, revealed permanently once ball passes ─
-    //
-    // `enter` is the only threshold — once the ball crosses it, the card
-    // fades in and stays visible for the rest of the session (no hide).
-    //
-    // To fine-tune, temporarily log inside onUpdate:
-    //   console.log("progress:", self.progress.toFixed(3));
-    //
+    // ── 3. Text cards: revealed permanently once ball passes ────────
     const textTriggers = [
       { ref: text1Ref, enter: 0.18 },
       { ref: text2Ref, enter: 0.33 },
@@ -90,20 +76,24 @@ const Home = () => {
       { ref: text5Ref, enter: 0.76 },
     ];
 
-    // Once flipped to true, never reset — card stays visible forever
     const revealed = textTriggers.map(() => false);
 
-    // Start all cards invisible
     textTriggers.forEach(({ ref }) => {
       gsap.set(ref.current, { opacity: 0, scale: 0.8 });
     });
 
     // ── 4. Ball follows path ───────────────────────────────────────
-    const mainEl = document.querySelector(".main");
+    const mainEl    = document.querySelector(".main");
     const mainHeight = mainEl.getBoundingClientRect().height;
 
-    gsap.set(ballRef.current, { opacity: 0 });
+    let scrollMultiplier;
+    if (width < 768)       scrollMultiplier = 1.2;
+    else if (width < 1024) scrollMultiplier = 1.3;
+    else                   scrollMultiplier = 1.0;
 
+    const scrollDistance = mainHeight * scrollMultiplier;
+
+    gsap.set(ballRef.current, { opacity: 0 });
     ScrollTrigger.refresh();
 
     gsap.to(ballRef.current, {
@@ -119,13 +109,12 @@ const Home = () => {
       scrollTrigger: {
         trigger: mainEl,
         start: "top top",
-        end: `top+=${mainHeight}px bottom`,
+        end: `top+=${scrollDistance}px bottom`,
         scrub: 1,
-        onEnter: () => gsap.to(ballRef.current, { opacity: 1, duration: 0.3 }),
-        onLeave: () => gsap.to(ballRef.current, { opacity: 0, duration: 0.3 }),
-        onEnterBack: () => gsap.to(ballRef.current, { opacity: 1, duration: 0.3 }),
-        onLeaveBack: () => gsap.to(ballRef.current, { opacity: 0, duration: 0.3 }),
-        // Reveal each card once — latch stays true, card never hides again
+        onEnter:      () => gsap.to(ballRef.current, { opacity: 1, duration: 0.3 }),
+        onLeave:      () => gsap.to(ballRef.current, { opacity: 0, duration: 0.3 }),
+        onEnterBack:  () => gsap.to(ballRef.current, { opacity: 1, duration: 0.3 }),
+        onLeaveBack:  () => gsap.to(ballRef.current, { opacity: 0, duration: 0.3 }),
         onUpdate: (self) => {
           const p = self.progress;
           textTriggers.forEach(({ ref, enter }, i) => {
@@ -138,7 +127,6 @@ const Home = () => {
       },
     });
 
-    // ── Cleanup ────────────────────────────────────────────────────
     return () => {
       pinTrigger.kill();
       ScrollTrigger.getAll().forEach((t) => t.kill());
@@ -147,33 +135,22 @@ const Home = () => {
 
   return (
     <div id="home" className="sky-bg overflow-x-hidden w-screen">
-      {/* ── SEO Head ── */}
       <Helmet>
         <title>
           AbcKid360 | オンライン小学生英会話 –
           外国人講師によるマンツーマン・グループレッスン
         </title>
-        <meta
-          name="description"
-          content="タブレット・パソコンで外国人の先生とオンライン英会話。週2回、マンツーマン30分＋グループ30分。小学1〜6年生対象。フォニックス・絵本・歌で楽しく学べる。"
-        />
-        <meta
-          property="og:title"
-          content="AbcKid360 | オンライン小学生英会話"
-        />
-        <meta
-          property="og:description"
-          content="外国人講師によるオンライン英会話。週2回レッスン、小学1〜6年生対象。"
-        />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
+        <meta name="description" content="タブレット・パソコンで外国人の先生とオンライン英会話。週2回、マンツーマン30分＋グループ30分。小学1〜6年生対象。フォニックス・絵本・歌で楽しく学べる。" />
+        <meta property="og:title"       content="AbcKid360 | オンライン小学生英会話" />
+        <meta property="og:description" content="外国人講師によるオンライン英会話。週2回レッスン、小学1〜6年生対象。" />
+        <meta property="og:type"        content="website" />
+        <meta name="twitter:card"       content="summary" />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "EducationalOrganization",
             name: "AbcKid360",
-            description:
-              "外国人講師によるオンライン小学生英会話スクール。週2回、マンツーマン＋グループレッスン。",
+            description: "外国人講師によるオンライン小学生英会話スクール。週2回、マンツーマン＋グループレッスン。",
             url: "https://yourdomain.com",
             inLanguage: "ja",
             audience: {
@@ -188,75 +165,30 @@ const Home = () => {
 
       {/* ── Decorative clouds (desktop only) ── */}
       <div className="lg:block hidden">
-        <img
-          className="absolute w-[30vw] top-15 z-50 left-12"
-          src="/images/onlyc.webp"
-          alt=""
-          width="480"
-          height="320"
-          aria-hidden="true"
-        />
-        <img
-          className="absolute w-[30vw] top-1/2 z-50 -left-14"
-          src="/images/leftc.webp"
-          alt=""
-          width="480"
-          height="320"
-          aria-hidden="true"
-        />
-        <img
-          className="absolute w-[40vw] top-1/2 z-50 -right-44"
-          src="/images/rightc.webp"
-          alt=""
-          width="640"
-          height="320"
-          aria-hidden="true"
-        />
+        <img className="absolute w-[30vw] top-15 z-50 left-12"   src="/images/onlyc.webp"  alt="" width="480" height="320" aria-hidden="true" />
+        <img className="absolute w-[30vw] top-1/2 z-50 -left-14" src="/images/leftc.webp"  alt="" width="480" height="320" aria-hidden="true" />
+        <img className="absolute w-[40vw] top-1/2 z-50 -right-44" src="/images/rightc.webp" alt="" width="640" height="320" aria-hidden="true" />
       </div>
 
-      {/* ── Loading screen overlay ── */}
-      <div
-        className="load h-screen w-screen absolute top-0 left-0 z-50 bg-sky-300"
-        aria-hidden="true"
-      />
+      {/* ── Loading overlay ── */}
+      <div className="load h-screen w-screen absolute top-0 left-0 z-50 bg-sky-300" aria-hidden="true" />
 
       {/* ── Header ── */}
       <header className="h-[15vh] bg-white flex items-center p-[1.3vw] -mt-[3vh] lg:-mt-[1vw] w-full">
-        <img
-          className="w-[20vw] md:w-[12vw] lg:w-[6vw] invert"
-          src="/images/360logo.webp"
-          alt="AbcKid360 ロゴ"
-          width="96"
-          height="96"
-        />
+        <img className="w-[20vw] md:w-[12vw] lg:w-[6vw] invert" src="/images/360logo.webp" alt="AbcKid360 ロゴ" width="96" height="96" />
       </header>
 
       {/* ── Pinned section ── */}
-      <div
-        ref={pinRef}
-        className="h-[30vh] z-40 bg-white flex justify-center items-center w-full relative"
-      >
-        <div
-          ref={leftLine}
-          className="h-[2px] w-[40vw] md:w-[46.5vw] absolute left-0 bottom-0 bg-black z-40"
-        />
-        <div
-          ref={circleRef}
-          className="lg:h-[7vw] lg:w-[7vw] md:h-[14vw] md:w-[14vw] z-50 h-[20vw] w-[20vw]
-                     flex sky-ball justify-center absolute -bottom-[5vh] lg:-bottom-[3.5vw]
-                     items-center rounded-full border border-black"
-        >
+      <div ref={pinRef} className="h-[30vh] z-40 bg-white flex justify-center items-center w-full relative">
+        <div ref={leftLine}  className="h-[2px] w-[40vw] md:w-[46.5vw] absolute left-0 bottom-0 bg-black z-40" />
+        <div ref={circleRef} className="lg:h-[7vw] lg:w-[7vw] md:h-[14vw] md:w-[14vw] z-50 h-[20vw] w-[20vw] flex sky-ball justify-center absolute -bottom-[5vh] lg:-bottom-[3.5vw] items-center rounded-full border border-black">
           <div className="h-[3vh] ourball z-10 w-[3vh] bg-black rounded-full" />
         </div>
-        <div
-          ref={rightLine}
-          className="h-[2px] w-[40vw] md:w-[46.5vw] absolute right-0 bottom-0 bg-black z-40"
-        />
+        <div ref={rightLine} className="h-[2px] w-[40vw] md:w-[46.5vw] absolute right-0 bottom-0 bg-black z-40" />
       </div>
 
-      {/* ── Main content ── */}
+      {/* ── Main ── */}
       <main>
-        {/* ── Scrolling text ── */}
         <div className="flex flex-col px-[7.5vw] sky-text bg-[#7DD3FC] w-full pt-[15vh]">
           <h1
             className="font-semibold text-[8vw] md:text-[5vw] lg:text-[3vw] md:mb-[8vh] mb-[5vh] lg:mb-[50vh] text-center tracking-tight"
@@ -270,6 +202,8 @@ const Home = () => {
 
         {/* ── PATH SECTION ── */}
         <div className="bg-[#7DD3FC] main relative h-[120vh] md:h-[110vh] lg:h-[280vh] w-screen overflow-hidden">
+
+          {/* SVG path + ball */}
           <div className="absolute inset-0 flex justify-center items-start">
             <svg
               ref={svgRef}
@@ -285,7 +219,6 @@ const Home = () => {
                 strokeWidth="8"
                 fill="none"
               />
-
               <circle
                 ref={ballRef}
                 cx="119.548"
@@ -296,73 +229,98 @@ const Home = () => {
             </svg>
           </div>
 
-          {/* Text card 1 */}
-          <div className="px-5 py-5 text-[1.4vw] text-center bg-white rounded-[10vw] flex justify-center items-center absolute lg:top-[100vh] md:top-[34vh] top-[41vh] font-normal lg:right-[20vw] right-[5vw]">
-            <div ref={text1Ref}>
-              週に２回一回目はマンツマン <br />
-              ３０分２回目はグループ３０分
+          {/*
+            ── CARD PAIRS ──────────────────────────────────────────────
+            Each card is a flex-col div containing the icon on top and
+            the text below. The whole pair is absolutely positioned so
+            icon and text always move together — they can never overlap.
+
+            Adjust the top / left / right values per breakpoint to
+            position each pair wherever you need it.
+          */}
+
+          {/* Pair 1 — boat + text (right side) */}
+          <div className="absolute flex flex-col items-center
+                          top-[25vh]  right-[5vw]
+                          md:top-[14vh] md:right-[14vw]
+                          lg:top-[55vh] lg:right-[16vw]
+                          -rotate-12">
+            <img
+              className="w-[32vw] md:w-[25vw] ml-12 md:ml-0 lg:w-[18vw] invert"
+              src="/images/svgs/boat.webp"
+              alt="" width="400" height="400" aria-hidden="true"
+            />
+            <div className="px-2 py-2 md:px-5 md:py-5 bg-white rounded-[10vw] text-[3vw] md:text-[1.4vw] font-normal text-center">
+              <div ref={text1Ref}>
+                週に２回一回目はマンツマン <br />
+                ３０分２回目はグループ３０分
+              </div>
             </div>
           </div>
-          <img
-            className="absolute w-[25vw] top-[30vh] lg:top-[56vh] md:top-[18vh] -rotate-12 right-[10vw] invert"
-            src="/images/svgs/boat.webp"
-            alt=""
-            width="400"
-            height="400"
-            aria-hidden="true"
-          />
 
-          {/* Text card 2 */}
-          <div className="px-5 py-5 bg-white rounded-[10vw] rotate-25 flex justify-center items-center absolute lg:top-[140vh] md:top-[48vh] top-[52vh] text-[1.5vw] font-semibold left-[2vw] lg:left-[5vw]">
-            <div ref={text2Ref}>大事な絵本を読んだりフォニックスを使ったり</div>
+          {/* Pair 2 — truck + text (left side) */}
+          <div className="absolute flex flex-col items-center gap-3
+                          top-[43vh]  left-[2vw]
+                          md:top-[30vh] md:left-[5vw]
+                          lg:top-[90vh] lg:left-[12vw]
+                          rotate-25">
+            <img
+              className="w-[32vw] md:w-[28vw] lg:w-[18vw] invert"
+              src="/images/svgs/truck.webp"
+              alt="" width="448" height="448" aria-hidden="true"
+            />
+            <div className="px-2 py-2 md:px-5 md:py-5 ml-2 md:ml-0 bg-white rounded-[10vw] text-[3vw] md:text-[1.5vw] font-normal text-center">
+              <div ref={text2Ref}>大事な絵本を読んだりフ <br /> ォニックスを使ったり</div>
+            </div>
           </div>
-          <img
-            className="absolute w-[28vw] lg:top-[110vh] md:top-[36vh] top-[44vh] rotate-25 left-[7vw] invert"
-            src="/images/svgs/truck.webp"
-            alt=""
-            width="448"
-            height="448"
-            aria-hidden="true"
-          />
 
-          {/* Text card 3 */}
-          <div className="px-5 py-5 text-[1.5vw] font-normal bg-white rounded-[10vw] flex justify-center items-center absolute lg:top-[177vh] md:top-[61vh] top-[66vh] -rotate-12 lg:right-[16vw] right-[4vw]">
-            <div ref={text3Ref}>歌や韻文を聞いたり</div>
+          {/* Pair 3 — cake + text (right side) */}
+          <div className="absolute flex flex-col items-center gap-0
+                          top-[57vh]  right-[4vw]
+                          md:top-[44vh] md:right-[6vw]
+                          lg:top-[135vh] lg:right-[15vw]
+                          -rotate-12">
+            <img
+              className="w-[32vw] md:w-[28vw] lg:w-[18vw] invert"
+              src="/images/svgs/cake.webp"
+              alt="" width="448" height="448" aria-hidden="true"
+            />
+            <div className="px-2 py-2 md:px-5 md:py-5 md:-mt-6 -mt-3 bg-white rounded-[10vw] text-[3vw] md:text-[1.5vw] font-normal text-center">
+              <div ref={text3Ref}>歌や韻文を聞いたり</div>
+            </div>
           </div>
-          <img
-            className="absolute w-[28vw] lg:top-[135vh] top-[56vh] md:top-[46vh] right-[5vw] invert"
-            src="/images/svgs/cake.webp"
-            alt=""
-            width="448"
-            height="448"
-            aria-hidden="true"
-          />
 
-          {/* Text card 4 */}
-          <div className="px-5 py-5 text-[2vw] font-normal bg-white rounded-[10vw] flex justify-center items-center absolute top-[76vh] lg:top-[222vh] left-[3vw] lg:left-[8vw]">
-            <div ref={text4Ref}>楽しいパズルと記憶術</div>
+          {/* Pair 4 — apple + text (left side) */}
+          <div className="absolute flex flex-col items-center gap-3
+                          top-[66vh]  left-[2vw]
+                          md:top-[54vh] md:left-[4vw]
+                          lg:top-[165vh] lg:left-[14vw]">
+            <img
+              className="w-[32vw] md:w-[28vw] lg:w-[18vw] invert"
+              src="/images/svgs/apple.webp"
+              alt="" width="448" height="448" aria-hidden="true"
+            />
+            <div className="px-2 py-2 md:px-5 md:py-5 -mt-6 bg-white rounded-[10vw] text-[3vw] md:text-[2vw] font-normal text-center">
+              <div ref={text4Ref}>楽しいパズルと記憶術</div>
+            </div>
           </div>
-          <img
-            className="absolute w-[28vw] lg:top-[170vh] md:top-[56vh] top-[64vh] lg:left-[10vw] left-[2vw] invert"
-            src="/images/svgs/apple.webp"
-            alt=""
-            width="448"
-            height="448"
-            aria-hidden="true"
-          />
 
-          {/* Text card 5 */}
-          <div className="px-5 py-5 -rotate-12 bg-white rounded-[10vw] flex justify-center items-center absolute lg:top-[258vh] md:top-[88vh] top-[91vh] text-[2vw] font-normal lg:right-[10vw] right-[2vw]">
-            <div ref={text5Ref}>小学校一年生から６年生まで</div>
+          {/* Pair 5 — clock + text (right side) */}
+          <div className="absolute flex flex-col items-center gap-3
+                          top-[76vh]  right-[2vw]
+                          md:top-[68vh] md:right-[5vw]
+                          lg:top-[195vh] lg:right-[16vw]
+                          -rotate-12">
+            <img
+              className="w-[32vw] md:w-[28vw] lg:w-[18vw] invert"
+              src="/images/svgs/clock.webp"
+              alt="" width="448" height="448" aria-hidden="true"
+            />
+            <div className="px-2 py-2 md:px-5 md:py-5 md:-mt-8 -mt-6 mr-4 md:mr-0 bg-white rounded-[10vw] text-[3vw] md:text-[2vw] font-normal text-center">
+              <div ref={text5Ref}>小学校一年生から６年生まで</div>
+            </div>
           </div>
-          <img
-            className="absolute w-[28vw] lg:top-[200vh] md:top-[66vh] top-[76vh] invert lg:right-[13vw] right-[5vw]"
-            src="/images/svgs/clock.webp"
-            alt=""
-            width="448"
-            height="448"
-            aria-hidden="true"
-          />
+
         </div>
       </main>
     </div>
